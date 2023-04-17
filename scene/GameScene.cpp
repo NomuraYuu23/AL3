@@ -4,13 +4,28 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+
+	//---3Dモデル---//
+	delete model_;
+
+}
 
 void GameScene::Initialize() {
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	//---テクスチャハンドル---//
+	textureHandle_ = TextureManager::Load("AL3_01.png");
+
+	//---3Dモデル---//
+	model_ = Model::Create();
+
+	//---ビュープロジェクション---//
+	viewProjection_.Initialize();
+
 }
 
 void GameScene::Update() {}

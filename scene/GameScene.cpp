@@ -3,6 +3,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include "PrimitiveDrawer.h"
+#include "AxisIndicator.h"
 
 GameScene::GameScene() {}
 
@@ -10,6 +11,7 @@ GameScene::~GameScene() {
 
 	delete sprite_;
 	delete model_;
+	delete debugCamera_;
 }
 
 void GameScene::Initialize() {
@@ -42,6 +44,14 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
 
+	//デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
+
+	//軸方向表示を有効にする
+	AxisIndicator::GetInstance()->SetVisible(true);
+	//軸方向表示が参照するビュープロジェクションを指定する(アドレス渡し)
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+
 }
 
 void GameScene::Update() {
@@ -63,7 +73,7 @@ void GameScene::Update() {
 	//ウィンドウの生成
 	ImGui::Begin("Debug");
 	// デバッグテキストの表示
-	//ImGui::Text("Kamata Tarou %d,%d,%d", 2050, 12, 31);
+	ImGui::Text("Kamata Tarou %d,%d,%d", 2050, 12, 31);
 	
 	//float3入力ボックス
 	ImGui::InputFloat3("InputFloat3", inputFloat3);
@@ -72,6 +82,9 @@ void GameScene::Update() {
 	//でもウィンドウの表示を有効化
 	ImGui::ShowDemoWindow();
 	ImGui::End();
+
+	//デバッグカメラの更新
+	debugCamera_->Update();
 
 }
 
@@ -101,7 +114,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+	model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -118,7 +131,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	//sprite_->Draw();
+	sprite_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

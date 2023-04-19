@@ -11,7 +11,7 @@ class Player {
 		//更新
 	    void Update();
 		//描画
-	    void Draw();
+	    void Draw(ViewProjection viewProjection);
 
 	private:
 		//ワールド変換データ

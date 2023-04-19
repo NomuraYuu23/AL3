@@ -15,12 +15,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 void Player::Update() {
 
-
+	//行列を定数バッファに転送
+	worldTransform_.TransferMatrix();
 
 }
 
-void Player::Draw() {
+void Player::Draw(ViewProjection viewProjection) {
 
-
+	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 }

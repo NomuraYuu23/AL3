@@ -70,7 +70,7 @@ void GameScene::Draw() {
 	/// </summary>
 	
 	//自キャラの描画
-	player_->Draw();
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

@@ -50,6 +50,15 @@ void Player::Update() {
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
+	// キャラクターの座標を画面表示する処理
+	float inputFloat3[3] = {
+	    worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z};
+
+	ImGui::Begin("PlayerDebug");
+	ImGui::SliderFloat3("Player", inputFloat3, -65536.0f, 65536.0f);
+	ImGui::End();
+
 	//アフィン変換行列の作成
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
@@ -62,14 +71,5 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-
-	float inputFloat3[3] = {
-	    worldTransform_.translation_.x, worldTransform_.translation_.y,
-	    worldTransform_.translation_.z};
-
-	//キャラクターの座標を画面表示する処理
-	//ImGui::Begin("");
-	//ImGui::SliderFloat3("Player", inputFloat3, 0.0f, 1.0f);
-	//ImGui::End();
 
 }

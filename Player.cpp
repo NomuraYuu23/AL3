@@ -50,14 +50,29 @@ void Player::Update() {
 	worldTransform_.translation_.y += move.y;
 	worldTransform_.translation_.z += move.z;
 
+	//移動限界座標
+	const float kMoveLimitX = 32.0f;
+	const float kMoveLimitY = 17.0f;
+
+	//範囲を超えない処理
+	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +kMoveLimitX);
+	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
+
 	// キャラクターの座標を画面表示する処理
 	float inputFloat3[3] = {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z};
 
 	ImGui::Begin("PlayerDebug");
-	ImGui::SliderFloat3("Player", inputFloat3, -65536.0f, 65536.0f);
+	ImGui::SliderFloat3("Player", inputFloat3, -kMoveLimitX, kMoveLimitX);
 	ImGui::End();
+
+	//スライダーで動かす
+	worldTransform_.translation_.x = inputFloat3[0];
+	worldTransform_.translation_.y = inputFloat3[1];
+	worldTransform_.translation_.z = inputFloat3[2];
 
 	//アフィン変換行列の作成
 	worldTransform_.matWorld_ = MakeAffineMatrix(

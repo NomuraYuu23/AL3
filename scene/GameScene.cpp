@@ -9,7 +9,10 @@ GameScene::~GameScene() {
 
 	//---3Dモデル---//
 	delete model_;
-	
+		
+	// デバッグカメラ
+	delete debugCamera_;
+
 	//自キャラの解放
 	delete player_;
 
@@ -30,6 +33,9 @@ void GameScene::Initialize() {
 	//---ビュープロジェクション---//
 	viewProjection_.Initialize();
 
+	//デバッグカメラの生成
+	debugCamera_ = new DebugCamera(1280, 720);
+
 	//自キャラの生成
 	player_ = new Player();
 	//自キャラの初期化
@@ -38,6 +44,33 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
+	#ifdef _DEBUG
+	if (input_->TriggerKey(DIK_SPACE)) {
+		if (isDebugCameraActive_) {
+			isDebugCameraActive_ = false;
+		} else {
+			isDebugCameraActive_ = true;
+		}
+	}
+	#endif
+
+	//カメラの処理
+	if (isDebugCameraActive_) {
+		//デバッグカメラの更新
+		debugCamera_->Update();
+		
+		//デバッグカメラのビュー行列をコピー
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		//デバッグカメラのプロジェクション行列
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		//ビュー行列の転送
+		viewProjection_.TransferMatrix();
+
+	} else {
+	//ビュープロジェクション行列の更新と転送
+		viewProjection_.UpdateMatrix();
+	}
 
 	player_->Update();
 

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <cassert>
+#include "ImGuiManager.h"
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
 
@@ -61,5 +62,14 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	float inputFloat3[3] = {
+	    worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z};
+
+	//キャラクターの座標を画面表示する処理
+	//ImGui::Begin("");
+	//ImGui::SliderFloat3("Player", inputFloat3, 0.0f, 1.0f);
+	//ImGui::End();
 
 }

@@ -81,6 +81,9 @@ void Player::Update() {
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
 
+	//更新使えない謎
+	//worldTransform_.UpdateMatrix();
+
 }
 
 void Player::Draw(ViewProjection viewProjection) {

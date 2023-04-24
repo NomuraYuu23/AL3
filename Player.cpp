@@ -65,6 +65,14 @@ void Player::Update() {
 	    worldTransform_.translation_.x, worldTransform_.translation_.y,
 	    worldTransform_.translation_.z};
 
+	//キャラクターの攻撃処理
+	Attack();
+
+	//弾を更新
+	if (bullet_) {
+		bullet_->Update();
+	}
+
 	ImGui::Begin("PlayerDebug");
 	ImGui::SliderFloat3("Player", inputFloat3, -kMoveLimitX, kMoveLimitX);
 	ImGui::End();
@@ -92,6 +100,11 @@ void Player::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
+	//弾を描画
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
+
 }
 
 // 旋回
@@ -106,5 +119,19 @@ void Player::Rotate() {
 	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRowSpeed;
 	}	
+
+}
+
+//攻撃
+void Player::Attack() {
+
+	if (input_->PushKey(DIK_SPACE)) {
+		//弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		//弾を登録する
+		bullet_ = newBullet;
+	}
 
 }

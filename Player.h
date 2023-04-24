@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <Input.h>
+#include "PlayerBullet.h"
 
 //---自キャラクラス---//
 class Player {
@@ -17,6 +18,9 @@ class Player {
 		//旋回
 	    void Rotate();
 
+		//攻撃
+	    void Attack();
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
@@ -27,4 +31,8 @@ class Player {
 
 		//キーボード入力
 	    Input* input_ = nullptr;
+
+		//弾
+	    PlayerBullet* bullet_ = nullptr;
+
 };

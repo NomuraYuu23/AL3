@@ -1,6 +1,6 @@
 #pragma once
 #include "Model.h"
-#include "WorldTransform.h"
+//#include "WorldTransform.h"
 #include <Input.h>
 
 //---自キャラクラス---//
@@ -13,6 +13,9 @@ class Player {
 	    void Update();
 		//描画
 	    void Draw(ViewProjection viewProjection);
+		
+		//旋回
+	    void Rotate();
 
 	private:
 		//ワールド変換データ

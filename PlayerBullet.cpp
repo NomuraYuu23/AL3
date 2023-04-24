@@ -8,7 +8,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 
 	model_ = model;
 	//テクスチャ読み込み
-	textureHandle_ = TextureManager::Load("AL3_01.png");
+	textureHandle_ = TextureManager::Load("white1x1.png");
 
 	worldTransform_.Initialize();
 	//引数で受け取った初期座標をセット
@@ -18,7 +18,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 
 void PlayerBullet::Update() {
 
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 
 }
 

@@ -74,18 +74,35 @@ void Player::Update() {
 	worldTransform_.translation_.y = inputFloat3[1];
 	worldTransform_.translation_.z = inputFloat3[2];
 
+	//キャラクター攻撃処理
+	Attack();
+
+	//弾更新
+	if (bullet_) {
+		bullet_->Update();
+	}
+
+	/*
 	//アフィン変換行列の作成
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+	*/
+
+	worldTransform_.UpdateMatrix();
 
 }
 
 void Player::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	//弾描画
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 
 }
 
@@ -99,6 +116,21 @@ void Player::Rotate() {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRotSpeed;
+	}
+
+}
+// 攻撃
+void Player::Attack() {
+
+	if (input_->PushKey(DIK_SPACE)) {
+	
+		//弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		//弾を登録する
+		bullet_ = newBullet;
+
 	}
 
 }

@@ -74,15 +74,17 @@ void Player::Update() {
 	worldTransform_.translation_.y = inputFloat3[1];
 	worldTransform_.translation_.z = inputFloat3[2];
 
+	/*
 	//アフィン変換行列の作成
 	worldTransform_.matWorld_ = MakeAffineMatrix(
 	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
+	*/
 
-	//更新使えない謎
-	//worldTransform_.UpdateMatrix();
+	//行列を更新
+	worldTransform_.UpdateMatrix();
 
 }
 

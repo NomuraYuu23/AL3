@@ -14,6 +14,9 @@ class Player {
 		//描画
 	    void Draw(ViewProjection viewProjection);
 
+		//旋回
+	    void Rotate();
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

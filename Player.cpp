@@ -23,7 +23,7 @@ void Player::Update() {
 	worldTransform_.scale_ = {1.0f, 1.0f, 1.0f};
 
 	//回転ベクトル
-	worldTransform_.rotation_ = {0.0f, 0.0f, 0.0f};
+	Rotate();
 	 
 	// キャラクターの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -86,5 +86,20 @@ void Player::Update() {
 void Player::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+}
+
+// 旋回
+void Player::Rotate() {
+
+	//回転速さ[ラジアン/frame]
+	const float kRowSpeed = 0.02f;
+
+	//押した方向で移動ベクトルを変更
+	if (input_->PushKey(DIK_A)) {
+		worldTransform_.rotation_.y -= kRowSpeed;
+	} else if (input_->PushKey(DIK_D)) {
+		worldTransform_.rotation_.y += kRowSpeed;
+	}	
 
 }

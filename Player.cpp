@@ -60,19 +60,14 @@ void Player::Update() {
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +kMoveLimitY);
 
-	// キャラクターの座標を画面表示する処理
-	float inputFloat3[3] = {
-	    worldTransform_.translation_.x, worldTransform_.translation_.y,
-	    worldTransform_.translation_.z};
-
 	ImGui::Begin("PlayerDebug");
-	ImGui::SliderFloat3("Player", inputFloat3, -kMoveLimitX, kMoveLimitX);
+	ImGui::Text(
+	    "Player Pos:%f,%f,%f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	ImGui::Text(
+	    "Player Rot:%f,%f,%f", worldTransform_.rotation_.x, worldTransform_.rotation_.y,
+	    worldTransform_.rotation_.z);
 	ImGui::End();
-
-	//スライダーで動かす
-	worldTransform_.translation_.x = inputFloat3[0];
-	worldTransform_.translation_.y = inputFloat3[1];
-	worldTransform_.translation_.z = inputFloat3[2];
 
 	//キャラクター攻撃処理
 	Attack();

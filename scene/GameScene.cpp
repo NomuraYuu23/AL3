@@ -17,6 +17,9 @@ GameScene::~GameScene() {
 	//自キャラの解放
 	delete player_;
 
+	//敵キャラの解放
+	delete enemy_;
+
 }
 
 void GameScene::Initialize() {
@@ -26,7 +29,8 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	//---テクスチャハンドル---//
-	textureHandle_ = TextureManager::Load("AL3_01.png");
+	playerTextureHandle_ = TextureManager::Load("AL3_01.png");
+	enemyTextureHandle_ = TextureManager::Load("koke.png");
 
 	//---3Dモデル---//
 	model_ = Model::Create();
@@ -45,7 +49,12 @@ void GameScene::Initialize() {
 	//自キャラの生成
 	player_ = new Player();
 	//自キャラの初期化
-	player_->Initialize(model_, textureHandle_);
+	player_->Initialize(model_, playerTextureHandle_);
+
+	//敵キャラの生成
+	enemy_ = new Enemy();
+	//敵キャラの初期化
+	enemy_->Initialize(model_, enemyTextureHandle_);
 
 }
 
@@ -78,7 +87,12 @@ void GameScene::Update() {
 		viewProjection_.UpdateMatrix();
 	}
 
+	//自キャラの更新
 	player_->Update();
+	// 敵キャラの更新
+	if (enemy_) {
+		enemy_->Update();
+	}
 
 }
 
@@ -111,6 +125,11 @@ void GameScene::Draw() {
 	
 	//自キャラの描画
 	player_->Draw(viewProjection_);
+	//敵キャラの描画
+	if (enemy_) {
+		enemy_->Draw(viewProjection_);
+	}
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

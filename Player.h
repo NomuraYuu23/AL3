@@ -3,11 +3,14 @@
 //#include "WorldTransform.h"
 #include <Input.h>
 #include "PlayerBullet.h"
+#include <list>
 
 //---自キャラクラス---//
 class Player {
 
 	public:
+		//デストラクタ
+	    ~Player();
 		//初期化
 	    void Initialize(Model* model, uint32_t textureHandle);
 		//更新
@@ -32,6 +35,6 @@ class Player {
 	    Input* input_ = nullptr;
 
 		//弾
-	    PlayerBullet* bullet_ = nullptr;
+	    std::list<PlayerBullet*> bullets_;
 
 };

@@ -18,13 +18,17 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 // 更新
 void Enemy::Update() {
 
-	const Vector3 velocity = {
-	    0.0f,
-	    0.0f,
-	    -0.2f,
-	};
-
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
+	switch (phase_) {
+	case Enemy::Phase::Approach:
+	default:
+		//接近フェーズ
+		Approach();
+		break;
+	case Enemy::Phase::Leave:
+		// 離脱フェーズ
+		Leave();
+		break;
+	}
 
 	worldTransform_.UpdateMatrix();
 
@@ -34,5 +38,29 @@ void Enemy::Update() {
 void Enemy::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+}
+
+// 接近フェーズ
+void Enemy::Approach() {
+
+	// 移動(ベクトルを加算)
+	velocity.z = -0.2f;
+	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
+	// 規定の位置に到達したら離脱
+	if (worldTransform_.translation_.z < -9.0f) {
+		phase_ = Phase::Leave;
+	}
+
+}
+
+// 離脱フェーズ
+void Enemy::Leave() {
+	
+	// 移動(ベクトルを加算)
+	velocity.x = -0.3f;
+	velocity.y = 0.3f;
+	velocity.z = 0.0f;
+	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
 
 }

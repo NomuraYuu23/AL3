@@ -1,5 +1,15 @@
 #include "Enemy.h"
 #include <cassert>
+#include "ImGuiManager.h"
+
+
+//staticで宣言したメンバ関数ポインタテーブルの実体
+void (Enemy::*Enemy::pFunc[static_cast<size_t>(Phase::Leave) + 1])() = {
+
+	&Enemy::Approach, //接近
+	&Enemy::Leave     //離脱
+
+};
 
 	// 初期化
 void Enemy::Initialize(Model* model, uint32_t textureHandle) {
@@ -18,19 +28,17 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 // 更新
 void Enemy::Update() {
 
-	switch (phase_) {
-	case Enemy::Phase::Approach:
-	default:
-		//接近フェーズ
-		Approach();
-		break;
-	case Enemy::Phase::Leave:
-		// 離脱フェーズ
-		Leave();
-		break;
-	}
-
+	//現在のフェーズの関数を実行
+	(this->*pFunc[static_cast<size_t>(phase_)])();
+	//行列を更新
 	worldTransform_.UpdateMatrix();
+	//デバッグ用表示
+	ImGui::Begin("EnemyDebug");
+	ImGui::Text(
+	    "Enemy Pos:%f,%f,%f", worldTransform_.translation_.x, worldTransform_.translation_.y,
+	    worldTransform_.translation_.z);
+	ImGui::Text("Enemy Phase: %s", PhaseName[static_cast<size_t> (phase_)]);
+	ImGui::End();
 
 }
 

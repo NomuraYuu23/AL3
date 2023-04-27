@@ -31,7 +31,16 @@ class Enemy {
 		Leave,    //離脱する
 	};
 
+	// 行動フェーズ、デバッグ用名前
+	const char PhaseName[static_cast<size_t>(Phase::Leave) + 1][16]{
+	    "Approach", // 接近する
+	    "Leave" // 離脱する
+	};
+
 	Phase phase_ = Phase::Approach;
+
+	//メンバ関数ポインタ
+	static void (Enemy::*pFunc[static_cast<size_t>(Phase::Leave) + 1])();
 
 	Vector3 velocity = {
 	    0.0f,

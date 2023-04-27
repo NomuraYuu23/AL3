@@ -45,10 +45,10 @@ void Enemy::Draw(ViewProjection viewProjection) {
 void Enemy::Approach() {
 
 	// 移動(ベクトルを加算)
-	velocity.z = -0.2f;
+	velocity.z = -0.1f;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
 	// 規定の位置に到達したら離脱
-	if (worldTransform_.translation_.z < -9.0f) {
+	if (worldTransform_.translation_.z < -15.0f) {
 		phase_ = Phase::Leave;
 	}
 

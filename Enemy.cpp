@@ -12,7 +12,9 @@ Enemy::Enemy() {
 // デストラクタ
 Enemy::~Enemy() {
 
-	delete state;
+	if (state) {
+		delete state;
+	}
 
 }
 
@@ -46,10 +48,34 @@ void Enemy::Draw(ViewProjection viewProjection) {
 
 }
 
-//EnemyStateApproach
+//ChangeState
+void Enemy::ChangeState(BaseEnemyState* newState) {
+	
+	if (state) {
+		delete state;
+		state = newState;
+	}
+}
 
+//EnemyStateApproach
 void EnemyStateApproach::Update(Enemy* pEnemy) {
 
+	// 移動(ベクトルを加算)
+	pEnemy->SetVelocity(Vector3{0.0f, 0.0f, -0.1f});
+	pEnemy->SetWorldTransformTranslation(
+	    Add(pEnemy->GetWorldTransformTranslation(), pEnemy->GetVelocity())); 
+	// 規定の位置に到達したら離脱
+	if (pEnemy->GetWorldTransformTranslation().z < -15.0f) {
+		pEnemy->ChangeState(new EnemyStateLeave);
+	}
 
+}
+
+// EnemyStateLeave
+void EnemyStateLeave::Update(Enemy* pEnemy) {
+
+	pEnemy->SetVelocity(Vector3{-0.3f, 0.3f, 0.0f});
+	pEnemy->SetWorldTransformTranslation(
+	    Add(pEnemy->GetWorldTransformTranslation(), pEnemy->GetVelocity())); 
 
 }

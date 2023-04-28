@@ -7,6 +7,8 @@ class Enemy;
 
 class BaseEnemyState {
 public:
+	BaseEnemyState() {}
+	virtual~BaseEnemyState() {}
 	virtual void Update(Enemy* pEnemy) = 0;
 
 };
@@ -36,8 +38,16 @@ class Enemy {
 	void Update();
 	// 描画
 	void Draw(ViewProjection viewProjection);
-
+	//ChangeState
 	void ChangeState(BaseEnemyState* newState);
+
+	Vector3 GetVelocity() { return velocity_; }
+	void SetVelocity(Vector3 velocity) { velocity_ = velocity; }
+
+	Vector3 GetWorldTransformTranslation() { return worldTransform_.translation_; }
+	void SetWorldTransformTranslation(Vector3 worldTransformTranslation) {
+		worldTransform_.translation_ = worldTransformTranslation;
+	}
 
 	private:
 	// ワールド変換データ
@@ -49,7 +59,7 @@ class Enemy {
 
 	BaseEnemyState* state;
 
-	Vector3 velocity = {
+	Vector3 velocity_ = {
 	    0.0f,
 	    0.0f,
 	    0.0f,

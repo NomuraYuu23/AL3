@@ -7,18 +7,18 @@ class Enemy;
 
 class BaseEnemyState {
 public:
-	virtual void Update() = 0;
+	virtual void Update(Enemy* pEnemy) = 0;
 
 };
 
 class EnemyStateApproach : public BaseEnemyState {
 public:
-	void Update();
+	void Update(Enemy* pEnemy);
 };
 
 class EnemyStateLeave : public BaseEnemyState {
 public:
-	void Update();
+	void Update(Enemy* pEnemy);
 };
 
 class Enemy {
@@ -46,6 +46,8 @@ class Enemy {
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	BaseEnemyState* state;
 
 	Vector3 velocity = {
 	    0.0f,

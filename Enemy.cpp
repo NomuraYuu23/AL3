@@ -1,7 +1,22 @@
 #include "Enemy.h"
+#include <iostream>
 #include <cassert>
 
-	// 初期化
+// コンストラクタ
+Enemy::Enemy() {
+
+	state = new EnemyStateApproach();
+
+}
+
+// デストラクタ
+Enemy::~Enemy() {
+
+	delete state;
+
+}
+
+// 初期化
 void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 
 	// NULLポインタチェック
@@ -18,17 +33,7 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 // 更新
 void Enemy::Update() {
 
-	switch (phase_) {
-	case Enemy::Phase::Approach:
-	default:
-		//接近フェーズ
-		Approach();
-		break;
-	case Enemy::Phase::Leave:
-		// 離脱フェーズ
-		Leave();
-		break;
-	}
+	state->Update(this);
 
 	worldTransform_.UpdateMatrix();
 
@@ -41,26 +46,10 @@ void Enemy::Draw(ViewProjection viewProjection) {
 
 }
 
-// 接近フェーズ
-void Enemy::Approach() {
+//EnemyStateApproach
 
-	// 移動(ベクトルを加算)
-	velocity.z = -0.1f;
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
-	// 規定の位置に到達したら離脱
-	if (worldTransform_.translation_.z < -15.0f) {
-		phase_ = Phase::Leave;
-	}
+void EnemyStateApproach::Update(Enemy* pEnemy) {
 
-}
 
-// 離脱フェーズ
-void Enemy::Leave() {
-	
-	// 移動(ベクトルを加算)
-	velocity.x = -0.3f;
-	velocity.y = 0.3f;
-	velocity.z = 0.0f;
-	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity);
 
 }

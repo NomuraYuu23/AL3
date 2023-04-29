@@ -5,7 +5,7 @@
 class EnemyBullet {
 public:
 	//初期化
-	void Initialize(Model* model, const Vector3& position);
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
 	//更新
 	void Update();
 	//描画
@@ -18,6 +18,10 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+
+	//速度
+	Vector3 velocity_;
+
 
 
 };

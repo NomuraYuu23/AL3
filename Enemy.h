@@ -1,6 +1,8 @@
 #pragma once
 #include "Model.h"
 // #include "WorldTransform.h"
+#include "EnemyBullet.h"
+#include <list>
 
 //前方宣言
 class Enemy;
@@ -40,6 +42,8 @@ class Enemy {
 	void Draw(ViewProjection viewProjection);
 	//ChangeState
 	void ChangeState(BaseEnemyState* newState);
+	//弾発射
+	void Fire();
 
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(Vector3 velocity) { velocity_ = velocity; }
@@ -64,5 +68,9 @@ class Enemy {
 	    0.0f,
 	    0.0f,
 	};
+
+	//弾
+	//std::list<EnemyBullet*> bullets_;
+	EnemyBullet* bullet_ = nullptr;
 
 };

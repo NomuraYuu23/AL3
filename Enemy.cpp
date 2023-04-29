@@ -29,6 +29,11 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 
 	worldTransform_.Initialize();
 
+	//初期座標
+	worldTransform_.translation_ = {10.0f, 0.0f, 5.0f};
+
+	//デバッグ
+	Fire();
 
 }
 
@@ -39,12 +44,24 @@ void Enemy::Update() {
 
 	worldTransform_.UpdateMatrix();
 
+	//攻撃処理
+
+	//弾更新
+	if (bullet_) {
+		bullet_->Update();
+	}
+
 }
 
 // 描画
 void Enemy::Draw(ViewProjection viewProjection) {
 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	// 弾更新
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 
 }
 
@@ -55,6 +72,22 @@ void Enemy::ChangeState(BaseEnemyState* newState) {
 		delete state;
 		state = newState;
 	}
+}
+
+// 弾発射
+void Enemy::Fire() {
+
+	//弾の速度
+	const float kBulletSpeed = -1.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+
+	//弾を生成し、初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+
+	//弾を登録する
+	bullet_ = newBullet;
+
 }
 
 //EnemyStateApproach

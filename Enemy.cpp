@@ -15,6 +15,11 @@ Enemy::~Enemy() {
 	if (state) {
 		delete state;
 	}
+	//bullets_の解放
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
+
 
 }
 
@@ -32,14 +37,22 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	//初期座標
 	worldTransform_.translation_ = {10.0f, 0.0f, 5.0f};
 
-	//デバッグ
-	Fire();
-
 }
 
 // 更新
 void Enemy::Update() {
 
+	//デスフラグの立った弾を削除
+	bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		
+		}
+		return false;
+		});
+
+	//行動
 	state->Update(this);
 
 	worldTransform_.UpdateMatrix();
@@ -47,8 +60,8 @@ void Enemy::Update() {
 	//攻撃処理
 
 	//弾更新
-	if (bullet_) {
-		bullet_->Update();
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
 	}
 
 }
@@ -59,8 +72,8 @@ void Enemy::Draw(ViewProjection viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 	// 弾更新
-	if (bullet_) {
-		bullet_->Draw(viewProjection);
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
 	}
 
 }
@@ -71,6 +84,7 @@ void Enemy::ChangeState(BaseEnemyState* newState) {
 	if (state) {
 		delete state;
 		state = newState;
+		state->Initialize(this);
 	}
 }
 
@@ -86,11 +100,19 @@ void Enemy::Fire() {
 	newBullet->Initialize(model_, worldTransform_.translation_, velocity);
 
 	//弾を登録する
-	bullet_ = newBullet;
+	bullets_.push_back(newBullet);
 
 }
 
 //EnemyStateApproach
+
+void EnemyStateApproach::Initialize(Enemy* pEnemy) {
+
+	//発射タイマーを初期化
+	pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+
+}
+
 void EnemyStateApproach::Update(Enemy* pEnemy) {
 
 	// 移動(ベクトルを加算)
@@ -102,9 +124,27 @@ void EnemyStateApproach::Update(Enemy* pEnemy) {
 		pEnemy->ChangeState(new EnemyStateLeave);
 	}
 
+	//発射タイマーカウントダウン
+	pEnemy->SetFiringTimer(pEnemy->GetFiringTimer() - 1);
+	//指定時間に達した
+	if (pEnemy->GetFiringTimer() <= 0) {
+		//弾を発射
+		pEnemy->Fire();
+		//発射タイマーを初期化
+		pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+	}
+
 }
 
 // EnemyStateLeave
+
+void EnemyStateLeave::Initialize(Enemy* pEnemy) {
+	
+	// 発射タイマーを初期化(警告がでるため)
+	pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+
+}
+
 void EnemyStateLeave::Update(Enemy* pEnemy) {
 
 	pEnemy->SetVelocity(Vector3{-0.3f, 0.3f, 0.0f});

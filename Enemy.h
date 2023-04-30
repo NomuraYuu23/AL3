@@ -52,8 +52,7 @@ class Enemy {
 	//発射してリセット
 	void FireAndReset();
 	// 発射タイマーをセットする
-	void SetFireTimer() { timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval));}
-
+	void SetFireTimer() { timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval)); }
 
 
 	Vector3 GetVelocity() { return velocity_; }
@@ -61,6 +60,8 @@ class Enemy {
 
 	Vector3 GetWorldTransformTranslation() { return worldTransform_.translation_; }
 	void SetWorldTransformTranslation(Vector3 worldTransformTranslation) { worldTransform_.translation_ = worldTransformTranslation; }
+
+	std::list<TimedCall*> GetTimedCalls() { return timedCalls_; }
 
 	// 発射感覚
 	static const int kFireInterval = 60;

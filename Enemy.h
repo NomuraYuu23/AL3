@@ -4,6 +4,8 @@
 #include "EnemyBullet.h"
 #include <list>
 
+#include "TimedCall.h"
+
 //前方宣言
 class Enemy;
 
@@ -47,15 +49,18 @@ class Enemy {
 	void ChangeState(BaseEnemyState* newState);
 	//弾発射
 	void Fire();
+	//発射してリセット
+	void FireAndReset();
+	// 発射タイマーをセットする
+	void SetFireTimer() { timedCalls_.push_back(new TimedCall(std::bind(&Enemy::FireAndReset, this), kFireInterval));}
+
+
 
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(Vector3 velocity) { velocity_ = velocity; }
 
 	Vector3 GetWorldTransformTranslation() { return worldTransform_.translation_; }
 	void SetWorldTransformTranslation(Vector3 worldTransformTranslation) { worldTransform_.translation_ = worldTransformTranslation; }
-
-	int32_t GetFiringTimer() { return firingTimer_; }
-	void SetFiringTimer(int32_t firingTimer) { firingTimer_ = firingTimer; }
 
 	// 発射感覚
 	static const int kFireInterval = 60;
@@ -78,8 +83,9 @@ class Enemy {
 
 	//弾
 	std::list<EnemyBullet*> bullets_;
-	//発射タイマー
-	int32_t firingTimer_ = 0;
+
+	//時限発動のリスト
+	std::list<TimedCall*> timedCalls_;
 
 
 };

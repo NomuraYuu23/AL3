@@ -6,6 +6,7 @@
 Enemy::Enemy() {
 
 	state = new EnemyStateApproach();
+	state->Initialize(this);
 
 }
 
@@ -19,7 +20,10 @@ Enemy::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
 		delete bullet;
 	}
-
+	//timedCall_の解放
+	for (TimedCall* timedCall : timedCalls_) {
+		delete timedCall;
+	}
 
 }
 
@@ -58,6 +62,7 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 
 	//攻撃処理
+
 
 	//弾更新
 	for (EnemyBullet* bullet : bullets_) {
@@ -104,13 +109,24 @@ void Enemy::Fire() {
 
 }
 
+// 発射してリセット
+void Enemy::FireAndReset() {
+
+	//弾を発射する
+	Fire();
+
+	//発射タイマーをセットする
+	SetFireTimer();
+}
+
 //EnemyStateApproach
 
 void EnemyStateApproach::Initialize(Enemy* pEnemy) {
 
 	pEnemy->SetVelocity(Vector3{0.0f, 0.0f, -0.1f});
-	//発射タイマーを初期化
-	pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+	// 発射タイマーをセットする
+	pEnemy->SetFireTimer();
+	
 
 }
 
@@ -124,14 +140,9 @@ void EnemyStateApproach::Update(Enemy* pEnemy) {
 		pEnemy->ChangeState(new EnemyStateLeave);
 	}
 
-	//発射タイマーカウントダウン
-	pEnemy->SetFiringTimer(pEnemy->GetFiringTimer() - 1);
-	//指定時間に達した
-	if (pEnemy->GetFiringTimer() <= 0) {
-		//弾を発射
-		pEnemy->Fire();
-		//発射タイマーを初期化
-		pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+	//範囲forでリストの全要素について回す
+	for (TimedCall* timedCall : pEnemy->GetTimedCalls()) {
+		timedCall->Update();
 	}
 
 }

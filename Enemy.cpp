@@ -108,6 +108,7 @@ void Enemy::Fire() {
 
 void EnemyStateApproach::Initialize(Enemy* pEnemy) {
 
+	pEnemy->SetVelocity(Vector3{0.0f, 0.0f, -0.1f});
 	//発射タイマーを初期化
 	pEnemy->SetFiringTimer(pEnemy->kFireInterval);
 
@@ -116,7 +117,6 @@ void EnemyStateApproach::Initialize(Enemy* pEnemy) {
 void EnemyStateApproach::Update(Enemy* pEnemy) {
 
 	// 移動(ベクトルを加算)
-	pEnemy->SetVelocity(Vector3{0.0f, 0.0f, -0.1f});
 	pEnemy->SetWorldTransformTranslation(
 	    Add(pEnemy->GetWorldTransformTranslation(), pEnemy->GetVelocity())); 
 	// 規定の位置に到達したら離脱
@@ -140,14 +140,12 @@ void EnemyStateApproach::Update(Enemy* pEnemy) {
 
 void EnemyStateLeave::Initialize(Enemy* pEnemy) {
 	
-	// 発射タイマーを初期化(警告がでるため)
-	pEnemy->SetFiringTimer(pEnemy->kFireInterval);
+	pEnemy->SetVelocity(Vector3{-0.3f, 0.3f, 0.0f});
 
 }
 
 void EnemyStateLeave::Update(Enemy* pEnemy) {
 
-	pEnemy->SetVelocity(Vector3{-0.3f, 0.3f, 0.0f});
 	pEnemy->SetWorldTransformTranslation(
 	    Add(pEnemy->GetWorldTransformTranslation(), pEnemy->GetVelocity())); 
 

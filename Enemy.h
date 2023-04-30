@@ -6,6 +6,10 @@
 
 #include "TimedCall.h"
 
+//#include "Player.h"
+
+// 自機クラスの前方宣言
+class Player;
 //前方宣言
 class Enemy;
 
@@ -63,6 +67,11 @@ class Enemy {
 
 	std::list<TimedCall*> GetTimedCalls() { return timedCalls_; }
 
+	void SetPlayer(Player* player) { player_ = player; }
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 	// 発射感覚
 	static const int kFireInterval = 60;
 
@@ -87,6 +96,9 @@ class Enemy {
 
 	//時限発動のリスト
 	std::list<TimedCall*> timedCalls_;
+
+	//自キャラ
+	Player* player_ = nullptr;
 
 
 };

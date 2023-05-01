@@ -79,3 +79,32 @@ Vector3 Normalize(const Vector3& v) {
 
 	return result;
 }
+
+// 線形補間
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+
+	Vector3 result = Add(v1, Multiply(t, Subtract(v2, v1)));
+
+	return result;
+
+}
+
+// 球面線形補間
+Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t) {
+
+	//v1,v2を正規化
+	Vector3 start = Normalize(v1);
+	Vector3 end = Normalize(v2);
+
+	//2ベクトル間の角度(鋭角側)
+	float angle = std::acosf(Dot(start, end));
+
+	//補間係数
+	float Ps = std::sinf(angle * (1 - t));
+	float Pe = std::sinf(angle * t);
+
+	Vector3 result = Multiply( 1.0f / std::sinf(angle), Add( Multiply(Ps, start), Multiply(Pe, end)));
+
+	return result;
+
+}

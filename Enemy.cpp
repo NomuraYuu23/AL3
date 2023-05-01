@@ -67,6 +67,7 @@ void Enemy::Update() {
 
 	//弾更新
 	for (EnemyBullet* bullet : bullets_) {
+		bullet->SetPlayer(player_);
 		bullet->Update();
 	}
 

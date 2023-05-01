@@ -2,6 +2,9 @@
 #include "Model.h"
 // #include "WorldTransform.h"
 
+// 自機クラスの前方宣言
+class Player;
+
 class EnemyBullet {
 public:
 	//初期化
@@ -12,6 +15,11 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	bool IsDead() const { return isDead_; }
+
+	void SetPlayer(Player* player) { player_ = player; }
+
+	// ワールド座標を取得
+	Vector3 GetWorldPosition();
 
 private:
 	// ワールド変換データ
@@ -31,5 +39,8 @@ private:
 	int32_t deathTimer_ = kLifeTime;
 	//デスフラグ
 	bool isDead_ = false;
+
+	// 自キャラ
+	Player* player_ = nullptr;
 
 };

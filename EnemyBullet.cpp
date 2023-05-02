@@ -20,9 +20,9 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 	velocity_ = velocity;
 
 	//Z方向に伸びた形状
-	worldTransform_.scale_.x = 0.5f;
-	worldTransform_.scale_.y = 0.5f;
-	worldTransform_.scale_.z = 3.0f;
+	worldTransform_.scale_.x = 1.0f;
+	worldTransform_.scale_.y = 1.0f;
+	worldTransform_.scale_.z = 1.0f;
 	
 	//Y軸周りの角度(Θy)
 	worldTransform_.rotation_.y = std::atan2f(velocity_.x, velocity_.z);
@@ -92,5 +92,12 @@ Vector3 EnemyBullet::GetWorldPosition() {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
+
+}
+
+// 衝突を検出したら呼び出されるコールバック関数
+void EnemyBullet::OnCollision() {
+
+	isDead_ = true; 
 
 }

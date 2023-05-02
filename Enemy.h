@@ -72,8 +72,17 @@ class Enemy {
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	// 衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
+	
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
+
 	// 発射感覚
 	static const int kFireInterval = 60;
+	// 半径
+	static const int kRadius = 1;
 
 	private:
 	// ワールド変換データ

@@ -26,6 +26,15 @@ class Player {
 		//ワールド座標を取得
 	    Vector3 GetWorldPosition();
 
+		//衝突を検出したら呼び出されるコールバック関数
+	    void OnCollision();
+
+		//弾リストを取得
+	    const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
+
+		//半径
+	    static const int kRadius = 1;
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

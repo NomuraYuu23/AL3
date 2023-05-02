@@ -147,6 +147,12 @@ Vector3 Enemy::GetWorldPosition() {
 
 }
 
+// 衝突を検出したら呼び出されるコールバック関数
+void Enemy::OnCollision() {
+
+	// 何もしない
+}
+
 //EnemyStateApproach
 
 void EnemyStateApproach::Initialize(Enemy* pEnemy) {

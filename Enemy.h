@@ -6,7 +6,7 @@
 
 #include "TimedCall.h"
 
-//#include "Player.h"
+#include "Collider.h"
 
 // 自機クラスの前方宣言
 class Player;
@@ -34,7 +34,7 @@ public:
 	void Update(Enemy* pEnemy);
 };
 
-class Enemy {
+class Enemy : public Collider {
 
 	public:
 
@@ -70,10 +70,10 @@ class Enemy {
 	void SetPlayer(Player* player) { player_ = player; }
 
 	// ワールド座標を取得
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 
 	// 衝突を検出したら呼び出されるコールバック関数
-	void OnCollision();
+	void OnCollision() override;
 
 	
 	// 弾リストを取得

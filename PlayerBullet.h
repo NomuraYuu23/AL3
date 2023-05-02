@@ -1,7 +1,10 @@
 #pragma once
 #include "Model.h"
 //#include "WorldTransform.h"
-class PlayerBullet {
+
+#include "Collider.h"
+
+class PlayerBullet : public Collider {
 
 	public:
 	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
@@ -13,10 +16,10 @@ class PlayerBullet {
 	bool IsDead() const { return isDead_; }
 
 	// ワールド座標を取得
-	Vector3 GetWorldPosition();
+	Vector3 GetWorldPosition() override;
 	
 	// 衝突を検出したら呼び出されるコールバック関数
-	void OnCollision();
+	void OnCollision() override;
 
 	// 半径
 	static const int kRadius = 1;

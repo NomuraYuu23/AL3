@@ -10,6 +10,8 @@
 //#include "WorldTransform.h"
 #include "DebugCamera.h"
 
+#include "Collider.h"
+
 #include "Player.h"
 #include "Enemy.h"
 
@@ -74,6 +76,9 @@ private: // メンバ変数
 
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
+
+	//コライダー2つの衝突判定と応答
+	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 	/// <summary>
 	/// ゲームシーン用

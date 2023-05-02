@@ -5,8 +5,10 @@
 #include "PlayerBullet.h"
 #include <list>
 
+#include "Collider.h"
+
 //---自キャラクラス---//
-class Player {
+class Player : public Collider{
 
 	public:
 		//デストラクタ
@@ -24,10 +26,10 @@ class Player {
 	    void Attack();
 
 		//ワールド座標を取得
-	    Vector3 GetWorldPosition();
+	    Vector3 GetWorldPosition() override;
 
 		//衝突を検出したら呼び出されるコールバック関数
-	    void OnCollision();
+	    void OnCollision() override;
 
 		//弾リストを取得
 	    const std::list<PlayerBullet*>& GetBullets() { return bullets_; }

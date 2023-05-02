@@ -15,6 +15,8 @@
 #include "Player.h"
 #include "Enemy.h"
 
+#include "CollisionManager.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -46,11 +48,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void CheakAllCollision();
-
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -77,8 +74,8 @@ private: // メンバ変数
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
 
-	//コライダー2つの衝突判定と応答
-	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
+	//衝突マネージャー
+	std::unique_ptr<CollisionManager> collisionManager;
 
 	/// <summary>
 	/// ゲームシーン用

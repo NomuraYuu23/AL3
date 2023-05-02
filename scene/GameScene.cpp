@@ -58,6 +58,9 @@ void GameScene::Initialize() {
 	// 敵キャラに自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
 
+	// 衝突マネージャー
+	collisionManager.reset(new CollisionManager);
+
 }
 
 void GameScene::Update() {
@@ -96,8 +99,22 @@ void GameScene::Update() {
 		enemy_->Update();
 	}
 
+	// リストをクリア
+	collisionManager->ListClear();
+	// コライダーをリストに登録
+	collisionManager->ListRegister(player_);
+	collisionManager->ListRegister(enemy_);
+	// 自弾全てについて
+	for (PlayerBullet* playerBullet : player_->GetBullets()) {
+		collisionManager->ListRegister(playerBullet);
+	}
+	// 敵弾全てについて
+	for (EnemyBullet* enemyBullet : enemy_->GetBullets()) {
+		collisionManager->ListRegister(enemyBullet);
+	}
 	//当たり判定
-	CheakAllCollision();
+	collisionManager->CheakAllCollision();
+
 
 }
 
@@ -152,105 +169,4 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
-}
-
-void GameScene::CheakAllCollision() {
-
-	/*
-	//自弾リストの取得
-	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
-	//敵弾リストの取得
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-
-#pragma region 自キャラと敵弾の当たり判定
-
-	for (EnemyBullet* enemyBullet : enemyBullets) {
-
-		CheckCollisionPair(player_, enemyBullet);
-
-	}
-
-#pragma endregion
-
-#pragma region 自弾と敵キャラの当たり判定
-
-	for (PlayerBullet* playerBullet : playerBullets) {
-	
-		CheckCollisionPair(playerBullet, enemy_);
-		
-	}
-
-#pragma endregion
-
-#pragma region 自弾と敵弾の当たり判定
-
-	for (PlayerBullet* playerBullet : playerBullets) {
-		for (EnemyBullet* enemyBullet : enemyBullets) {
-
-			CheckCollisionPair(playerBullet, enemyBullet);
-
-		}
-	}
-
-#pragma endregion
-	*/
-
-	//コライダー
-	std::list<Collider*> colliders_;
-	//コライダーをリストに登録
-	colliders_.push_back(player_);
-	colliders_.push_back(enemy_);
-	//自弾全てについて
-	for (PlayerBullet* playerBullet : player_->GetBullets()) {
-		colliders_.push_back(playerBullet);
-	}
-	//敵弾全てについて
-	for (EnemyBullet* enemyBullet : enemy_->GetBullets()) {
-		colliders_.push_back(enemyBullet);
-	}
-
-	//リスト内のペアを総当たり
-	std::list<Collider*>::iterator itrA = colliders_.begin();
-	for (; itrA != colliders_.end(); ++itrA) {
-		//イテレータAからコライダーAを取得する
-		Collider* colliderA = *itrA;
-		//イテレータBはイテレータAの次の要素から回す(重複判定を回避)
-		std::list<Collider*>::iterator itrB = itrA;
-		itrB++;
-
-		for (; itrB != colliders_.end(); ++itrB) {
-			// イテレータBからコライダーBを取得する
-			Collider* colliderB = *itrB;
-
-			//ペアの当たり判定
-			CheckCollisionPair(colliderA, colliderB);
-		}
-	}
-
-
-}
-
-// コライダー2つの衝突判定と応答
-void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-
-	//衝突フィルタリング
-	if (!(colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask() ) ||
-	    !(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask())) {
-		return;
-	}
-
-	//ワールド座標を取得
-	Vector3 posA = colliderA->GetWorldPosition();
-	Vector3 posB = colliderB->GetWorldPosition();
-	// 座標AとBの距離を求める
-	float distance = std::sqrtf(
-	    std::powf(posB.x - posA.x, 2.0f) + std::powf(posB.y - posA.y, 2.0f) +
-	    std::powf(posB.z - posA.z, 2.0f));
-	// 球と球の交差判定
-	if (distance <= colliderA->GetRadius() + colliderB->GetRadius()) {
-		// 自弾の衝突時コールバックを呼び出す
-		colliderA->OnCollision();
-		// 敵弾の衝突時コールバックを呼び出す
-		colliderB->OnCollision();
-	}
 }

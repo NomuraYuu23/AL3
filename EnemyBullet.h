@@ -25,9 +25,6 @@ public:
 
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision() override;
-	
-	// 半径
-	static const int kRadius = 1;
 
 private:
 	// ワールド変換データ

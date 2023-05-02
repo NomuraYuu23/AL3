@@ -81,8 +81,6 @@ class Enemy : public Collider {
 
 	// 発射感覚
 	static const int kFireInterval = 60;
-	// 半径
-	static const int kRadius = 1;
 
 	private:
 	// ワールド変換データ

@@ -34,9 +34,6 @@ class Player : public Collider{
 		//弾リストを取得
 	    const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
-		//半径
-	    static const int kRadius = 1;
-
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

@@ -42,6 +42,11 @@ void Enemy::Initialize(Model* model, uint32_t textureHandle) {
 	//初期座標
 	worldTransform_.translation_ = {10.0f, 0.0f, 30.0f};
 
+	// 衝突属性を設定
+	SetCollisionAttribute(0xfffffffd);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(0x00000002);
+
 }
 
 // 更新

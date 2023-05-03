@@ -14,6 +14,8 @@ GameScene::~GameScene() {
 		
 	// デバッグカメラ
 	delete debugCamera_;
+	//レールカメラ
+	delete railCamera_;
 
 	//自キャラの解放
 	delete player_;
@@ -46,6 +48,10 @@ void GameScene::Initialize() {
 
 	//デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
+
+	//レールカメラの生成
+	railCamera_ = new RailCamera();
+
 
 	//軸方向表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);

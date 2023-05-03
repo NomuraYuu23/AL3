@@ -1,5 +1,5 @@
 #include "GameScene.h"
-//#include "TextureManager.h"
+#include "TextureManager.h"
 #include <cassert>
 #include "ImGuiManager.h"
 #include "AxisIndicator.h"
@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 
 	//レールカメラの生成
 	railCamera_ = new RailCamera();
-
+	railCamera_->Initialize(Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f});
 
 	//軸方向表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -105,9 +105,20 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 
 	} else {
-	//ビュープロジェクション行列の更新と転送
-		viewProjection_.UpdateMatrix();
+		//ビュープロジェクション行列の更新と転送
+		//viewProjection_.UpdateMatrix();
+
+		// レールカメラ更新
+		railCamera_->Update();
+
+		// レールカメラのビュー行列をコピー
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		// レールカメラのプロジェクション行列
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		// ビュー行列の転送
+		viewProjection_.TransferMatrix();
 	}
+
 
 	//自キャラの更新
 	player_->Update();

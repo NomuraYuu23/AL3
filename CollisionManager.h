@@ -2,6 +2,7 @@
 
 #include <list>
 #include "Vector3.h"
+#include "AL3Math.h"
 #include "Collider.h"
 
 class CollisionManager {

@@ -2,6 +2,7 @@
 
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "AL3Math.h"
 
 class RailCamera {
 public:
@@ -10,6 +11,12 @@ public:
 
 	//更新
 	void Update();
+
+	/// <summary>
+	/// ビュープロジェクションを取得
+	/// </summary>
+	/// <returns>ビュープロジェクション</returns>
+	const ViewProjection& GetViewProjection() { return viewProjection_; }
 
 private:
 

@@ -1,4 +1,5 @@
-#include "Model.h"
+#include "WorldTransform.h"
+#include "AL3Math.h"
 
 void WorldTransform::UpdateMatrix() {
 

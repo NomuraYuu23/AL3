@@ -1,4 +1,5 @@
 #include "Vector3.h"
+#include "AL3Math.h"
 #include <cmath>
 
 // 加算

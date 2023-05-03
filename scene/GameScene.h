@@ -6,15 +6,17 @@
 #include "Model.h"
 #include "SafeDelete.h"
 #include "Sprite.h"
-//#include "ViewProjection.h"
-//#include "WorldTransform.h"
+#include "ViewProjection.h"
+#include "WorldTransform.h"
 #include "DebugCamera.h"
+#include "AL3Math.h"
 
 #include "Collider.h"
 
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
+
 #include "RailCamera.h"
 
 #include "CollisionManager.h"

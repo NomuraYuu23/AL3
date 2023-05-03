@@ -1,5 +1,6 @@
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include "AL3Math.h"
 #include <cmath>
 #include <cassert>
 

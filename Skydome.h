@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Model.h"
-// #include "WorldTransform.h"
+#include "WorldTransform.h"
+#include "AL3Math.h"
 
 class Skydome {
 public:

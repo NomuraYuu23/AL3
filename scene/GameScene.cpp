@@ -184,6 +184,18 @@ void GameScene::Draw() {
 	//天球の描画
 	skydome_->Draw(viewProjection_);
 
+	//デバッグレール描画
+	std::vector<Vector3> controlPoints_;
+	controlPoints_ = {
+	    {0,  0,  0},
+        {10, 10, 0},
+        {10, 15, 0},
+        {20, 15, 0},
+        {20, 0,  0},
+        {30, 0,  0},
+	};
+	CatmullRomSplineDraw(controlPoints_, 100, &viewProjection_);
+
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

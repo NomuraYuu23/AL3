@@ -2,6 +2,8 @@
 
 #include "Vector3.h"
 #include "Matrix4x4.h"
+#include <vector>
+#include "ViewProjection.h"
 
 // 自分で追加した分
 
@@ -22,8 +24,6 @@ Vector3 Normalize(const Vector3& v);
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 // 球面線形補間
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
-
-
 
 // 加算
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
@@ -54,3 +54,12 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 
 // 3次元アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
+
+
+
+// 3次スプライン曲線
+Vector3 CatmullRomSpline(const std::vector<Vector3>& controlPoints, const float& t);
+// 曲線描画テスト
+void CatmullRomSplineDraw(
+    const std::vector<Vector3>& controlPoints, size_t segmentCount,
+    const ViewProjection* viewProjection);

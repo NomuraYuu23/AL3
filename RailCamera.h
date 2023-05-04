@@ -18,6 +18,11 @@ public:
 	/// <returns>ビュープロジェクション</returns>
 	const ViewProjection& GetViewProjection() { return viewProjection_; }
 
+	//ワールド行列を取得
+	const WorldTransform& GetWorldMatrix() { return worldTransform_; }
+
+
+
 private:
 
 	//ワールド変換データ
@@ -29,6 +34,6 @@ private:
 	// 移動速度
 	Vector3 translationVelocity = {0.0f,0.0f,0.1f};
 	// 回転速度
-	Vector3 rotationVelocity = {0.0f, 0.0f, 0.1f};
+	Vector3 rotationVelocity = {0.0f, 0.0f, 0.0f};
 
 };

@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 
 	//レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize(Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f});
+	railCamera_->Initialize(Vector3{0.0f, 0.0f, -50.0f}, Vector3{0.0f, 0.0f, 0.0f});
 
 	//軸方向表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -62,6 +62,8 @@ void GameScene::Initialize() {
 	player_ = new Player();
 	//自キャラの初期化
 	player_->Initialize(model_, playerTextureHandle_);
+	//自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railCamera_->GetWorldMatrix());
 
 	//敵キャラの生成
 	enemy_ = new Enemy();

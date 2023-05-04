@@ -35,6 +35,9 @@ class Player : public Collider{
 		//弾リストを取得
 	    const std::list<PlayerBullet*>& GetBullets() { return bullets_; }
 
+		//親となるワールドトランスフォームをセット
+	    void SetParent(const WorldTransform* parent);
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

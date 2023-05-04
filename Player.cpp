@@ -21,6 +21,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	textureHandle_ = textureHandle;
 
 	worldTransform_.Initialize();
+	worldTransform_.translation_.z = 50.0f;
 
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -152,7 +153,7 @@ void Player::Attack() {
 
 		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		//弾を登録する
 		bullets_.push_back(newBullet);
@@ -180,4 +181,9 @@ void Player::OnCollision() {
 
 	//何もしない
 
+}
+
+	// 親となるワールドトランスフォームをセット
+void Player::SetParent(const WorldTransform* parent) {
+	worldTransform_.parent_ = parent; 
 }

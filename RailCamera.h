@@ -44,7 +44,7 @@ private:
 	// 速度(割合)
 	float velocity;
 
-	float targetDistance = 1.1f;
+	float targetDistance = 60.0f;
 
 
 };

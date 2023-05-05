@@ -80,10 +80,6 @@ class Enemy : public Collider {
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision() override;
 
-	
-	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() { return bullets_; }
-
 	// 発射感覚
 	static const int kFireInterval = 60;
 
@@ -102,9 +98,6 @@ class Enemy : public Collider {
 	    0.0f,
 	    0.0f,
 	};
-
-	//弾
-	std::list<EnemyBullet*> bullets_;
 
 	//時限発動のリスト
 	std::list<TimedCall*> timedCalls_;

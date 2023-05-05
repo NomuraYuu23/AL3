@@ -21,7 +21,9 @@ GameScene::~GameScene() {
 	delete player_;
 
 	//敵キャラの解放
-	delete enemy_;
+	for (Enemy* enemy : enemies_) {
+		delete enemy;
+	}
 
 	// 敵bullets_の解放
 	for (EnemyBullet* bullet : enemyBullets_) {
@@ -71,11 +73,15 @@ void GameScene::Initialize() {
 	player_->SetParent(&railCamera_->GetWorldMatrix());
 
 	//敵キャラの生成
-	enemy_ = new Enemy();
+	Enemy* enemy = new Enemy();
 	//敵キャラの初期化
-	enemy_->Initialize(model_, enemyTextureHandle_);
+	enemy->Initialize(model_, enemyTextureHandle_);
 	// 敵キャラに自キャラのアドレスを渡す
-	enemy_->SetPlayer(player_);
+	enemy->SetPlayer(player_);
+	//敵キャラにゲームシーンのアドレスを渡す
+	enemy->SetGameScene(this);
+
+	enemies_.push_back(enemy);
 
 	// 天球の生成
 	skydome_ = new Skydome();
@@ -130,21 +136,41 @@ void GameScene::Update() {
 	//自キャラの更新
 	player_->Update();
 	// 敵キャラの更新
-	if (enemy_) {
-		enemy_->Update();
+	for (Enemy* enemy : enemies_) {
+		enemy->Update();
 	}
+	//敵弾の処理
+	// デスフラグの立った弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+
+	// 弾更新
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->SetPlayer(player_);
+		bullet->Update();
+	}
+
 
 	// リストをクリア
 	collisionManager->ListClear();
 	// コライダーをリストに登録
+	// 自機について
 	collisionManager->ListRegister(player_);
-	collisionManager->ListRegister(enemy_);
+	// 敵全てについて
+	for (Enemy* enemy : enemies_) {
+		collisionManager->ListRegister(enemy);
+	}
 	// 自弾全てについて
 	for (PlayerBullet* playerBullet : player_->GetBullets()) {
 		collisionManager->ListRegister(playerBullet);
 	}
 	// 敵弾全てについて
-	for (EnemyBullet* enemyBullet : enemy_->GetBullets()) {
+	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		collisionManager->ListRegister(enemyBullet);
 	}
 	//当たり判定
@@ -183,8 +209,12 @@ void GameScene::Draw() {
 	//自キャラの描画
 	player_->Draw(viewProjection_);
 	//敵キャラの描画
-	if (enemy_) {
-		enemy_->Draw(viewProjection_);
+	for (Enemy* enemy : enemies_) {
+		enemy->Draw(viewProjection_);
+	}
+	// 敵弾の描画
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw(viewProjection_);
 	}
 	//天球の描画
 	skydome_->Draw(viewProjection_);

@@ -74,6 +74,8 @@ class Enemy : public Collider {
 
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
+	bool IsDead() const { return isDead_; }
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() override;
 
@@ -101,6 +103,9 @@ class Enemy : public Collider {
 
 	//時限発動のリスト
 	std::list<TimedCall*> timedCalls_;
+
+	// デスフラグ
+	bool isDead_ = false;
 
 	//自キャラ
 	Player* player_ = nullptr;

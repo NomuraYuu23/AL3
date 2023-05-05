@@ -74,6 +74,11 @@ void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
 	worldTransform_.matWorld_ =
 	    MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
+	// debug
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -100.0f});
+	// debugここまで
+
 	//カメラオブジェクトのワールド行列からビュー行列を計算する
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
 

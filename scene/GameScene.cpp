@@ -117,6 +117,7 @@ void GameScene::Update() {
 		//ビュー行列の転送
 		viewProjection_.TransferMatrix();
 
+
 	} else {
 		//ビュープロジェクション行列の更新と転送
 		//viewProjection_.UpdateMatrix();
@@ -139,8 +140,17 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
 	}
+	// デスフラグの立った敵を削除
+	enemies_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
 	//敵弾の処理
-	// デスフラグの立った弾を削除
+	// デスフラグの立った敵弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;

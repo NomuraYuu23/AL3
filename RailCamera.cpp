@@ -10,15 +10,18 @@ void RailCamera::Initialize(const Vector3& position, const Vector3& rotation) {
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
+	t = 0.0f;
+	velocity = 0.001f;
+
 }
 
 // 更新
-void RailCamera::Update() {
+void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
 
 	//ワールドトランスフォームの座標の数値を加算したりする(移動)
-	worldTransform_.translation_ = Add(worldTransform_.translation_, translationVelocity);
+	//worldTransform_.translation_ = Add(worldTransform_.translation_, translationVelocity);
 	//ワールドトランスフォームの角度の数値を加算したりする(回転)
-	worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotationVelocity);
+	//worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotationVelocity);
 	
 	// カメラの座標を画面表示する処理
 	ImGui::Begin("Camera");
@@ -40,6 +43,33 @@ void RailCamera::Update() {
 
 	ImGui::End();
 	
+	//tを進める
+	t += velocity;
+	if (t >= 1.0f) {
+		t = 1.0f;
+	} else {
+		eye = CatmullRomSpline(controlPoints, t);
+		float targetT = t + velocity * targetDistance;
+		if (targetT >= 1.0f) {
+			targetT = 1.0f;
+		}
+		target = CatmullRomSpline(controlPoints, targetT);
+
+		// eyeをワールドトランスフォームに
+		worldTransform_.translation_ = eye;
+		// eyeとtargetの差分ベクトル
+		Vector3 forward = Subtract(target, eye);
+		// ベクトルの正規化
+		forward = Normalize(forward);
+		// 進行方向に見た目の回転を合わせる
+		// Y軸周りの角度(Θy)
+		worldTransform_.rotation_.y = std::atan2f(forward.x, forward.z);
+		// 横軸方向の長さを求める
+		float length = Length(Vector3{forward.x, 0.0f, forward.z});
+		// X軸周りの角度(Θx)
+		worldTransform_.rotation_.x = std::atan2f(-forward.y, length);
+	}
+
 	//ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ =
 	    MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);

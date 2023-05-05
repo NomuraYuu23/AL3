@@ -88,6 +88,15 @@ private: // メンバ変数
 	//衝突マネージャー
 	std::unique_ptr<CollisionManager> collisionManager;
 
+	std::vector<Vector3> controlPoints_ = {
+	    {0,  0,   0},
+        {10, 10, 10},
+        {10, 15, 10},
+        {20, 15, 10},
+        {20, 0,  20},
+        {30, 0,  20},
+	};
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>

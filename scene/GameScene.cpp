@@ -51,7 +51,7 @@ void GameScene::Initialize() {
 
 	//レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize(Vector3{0.0f, 0.0f, -50.0f}, Vector3{0.0f, 0.0f, 0.0f});
+	railCamera_->Initialize(Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f});
 
 	//軸方向表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -111,7 +111,7 @@ void GameScene::Update() {
 		//viewProjection_.UpdateMatrix();
 
 		// レールカメラ更新
-		railCamera_->Update();
+		railCamera_->Update(controlPoints_);
 
 		// レールカメラのビュー行列をコピー
 		viewProjection_.matView = railCamera_->GetViewProjection().matView;
@@ -185,15 +185,6 @@ void GameScene::Draw() {
 	skydome_->Draw(viewProjection_);
 
 	//デバッグレール描画
-	std::vector<Vector3> controlPoints_;
-	controlPoints_ = {
-	    {0,  0,  0},
-        {10, 10, 0},
-        {10, 15, 0},
-        {20, 15, 0},
-        {20, 0,  0},
-        {30, 0,  0},
-	};
 	CatmullRomSplineDraw(controlPoints_, 100, &viewProjection_);
 
 

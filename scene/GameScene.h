@@ -10,16 +10,14 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "AL3Math.h"
-
 #include "Collider.h"
-
 #include "Player.h"
 #include "Enemy.h"
+#include "EnemyBullet.h"
 #include "Skydome.h"
-
 #include "RailCamera.h"
-
 #include "CollisionManager.h"
+#include <list>
 
 /// <summary>
 /// ゲームシーン
@@ -51,6 +49,12 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+	
+	/// <summary>
+	/// 敵弾を追加する
+	/// </summary>
+	/// <param name="enemyBullet"></param>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -81,6 +85,9 @@ private: // メンバ変数
 
 	//敵キャラ
 	Enemy* enemy_ = nullptr;
+
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
 
 	//天球
 	Skydome* skydome_ = nullptr;

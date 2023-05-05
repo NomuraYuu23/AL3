@@ -9,6 +9,8 @@
 
 #include "Collider.h"
 
+//GameSceneの前方宣言
+class GameScene;
 // 自機クラスの前方宣言
 class Player;
 //前方宣言
@@ -70,6 +72,8 @@ class Enemy : public Collider {
 
 	void SetPlayer(Player* player) { player_ = player; }
 
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
 	// ワールド座標を取得
 	Vector3 GetWorldPosition() override;
 
@@ -107,6 +111,7 @@ class Enemy : public Collider {
 
 	//自キャラ
 	Player* player_ = nullptr;
-
+	//ゲームシーン
+	GameScene* gameScene_ = nullptr;
 
 };

@@ -23,6 +23,11 @@ GameScene::~GameScene() {
 	//敵キャラの解放
 	delete enemy_;
 
+	// 敵bullets_の解放
+	for (EnemyBullet* bullet : enemyBullets_) {
+		delete bullet;
+	}
+
 	// 天球の解放
 	delete skydome_;
 
@@ -204,4 +209,11 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
+
+	//リストに登録する
+	enemyBullets_.push_back(enemyBullet);
+
 }

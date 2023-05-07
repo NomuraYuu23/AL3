@@ -48,6 +48,9 @@ class Player : public Collider{
 		//マウスレティクル
 	    void MouseReticle(ViewProjection viewProjection);
 
+		//ゲームパッドレティクル
+	    void GameReticle(ViewProjection viewProjection);
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

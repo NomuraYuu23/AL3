@@ -95,6 +95,9 @@ void GameScene::Initialize() {
 	//敵発生データの読み込み
 	LoadEnemyPopData();
 
+	//レティクルのテクスチャ
+	TextureManager::Load("./Resources/Reticle.png");
+
 }
 
 void GameScene::Update() {
@@ -251,6 +254,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

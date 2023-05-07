@@ -10,6 +10,9 @@ Player::~Player() {
 		delete bullet;
 	}
 
+	//スプライトの解放
+	delete sprite2DReticle_;
+
 }
 
 void Player::Initialize(Model* model, uint32_t textureHandle) {
@@ -33,6 +36,13 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	//3Dレティクルのワールドトランスフォーム初期化
 	worldTransform3DReticle_.Initialize();
+
+	//レティクル用テクスチャ取得
+	uint32_t textureReticle = TextureManager::Load("./Resources/Reticle.png");
+
+	//スプライト生成
+	sprite2DReticle_ = Sprite::Create(
+	    textureReticle, Vector2(10.0f, 10.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
 
 }
 
@@ -119,6 +129,12 @@ void Player::Update() {
 	//3Dレティクルの座標を指定
 	worldTransform3DReticle_.translation_ = Add(offset, worldTransform_.translation_);
 	worldTransform3DReticle_.UpdateMatrix();
+
+	//3Dレティクルのワールド座標から2Dレティクルのスクリーン座標を計算
+	Vector3 positionRecticle = Get3DReticleWorldPosition();
+	
+	//ビューポート行列
+	Matrix4x4 matViewport;
 
 }
 
@@ -210,5 +226,12 @@ Vector3 Player::Get3DReticleWorldPosition() {
 	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
 
 	return worldPos;
+
+}
+
+// UI描画
+void Player::DrawUI() {
+
+	sprite2DReticle_->Draw();
 
 }

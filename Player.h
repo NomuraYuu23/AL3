@@ -7,6 +7,7 @@
 #include <list>
 
 #include "Collider.h"
+#include <Sprite.h>
 
 //---自キャラクラス---//
 class Player : public Collider{
@@ -41,6 +42,9 @@ class Player : public Collider{
 		// 3DReticleのワールド座標を取得
 		Vector3 Get3DReticleWorldPosition();
 
+		//UI描画
+	    void DrawUI();
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
@@ -57,5 +61,8 @@ class Player : public Collider{
 
 		//3Dレティクル用ワールドトランスフォーム
 	    WorldTransform worldTransform3DReticle_;
+
+		//2Dレティクル用のスプライト
+	    Sprite* sprite2DReticle_ = nullptr;
 
 };

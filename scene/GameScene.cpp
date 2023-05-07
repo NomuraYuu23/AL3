@@ -3,6 +3,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 #include "AxisIndicator.h"
+#include <fstream>
 
 GameScene::GameScene() {}
 
@@ -91,6 +92,9 @@ void GameScene::Initialize() {
 	// 衝突マネージャー
 	collisionManager.reset(new CollisionManager);
 
+	//敵発生データの読み込み
+	LoadEnemyPopData();
+
 }
 
 void GameScene::Update() {
@@ -136,6 +140,9 @@ void GameScene::Update() {
 
 	//自キャラの更新
 	player_->Update();
+
+	//敵発生コマンドの更新
+	UpdateEnemyPopComands();
 	// 敵キャラの更新
 	for (Enemy* enemy : enemies_) {
 		enemy->Update();
@@ -255,5 +262,100 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 
 	//リストに登録する
 	enemyBullets_.push_back(enemyBullet);
+
+}
+
+void GameScene::LoadEnemyPopData() {
+
+	//ファイルを開く
+	std::ifstream file;
+	file.open("./Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	//ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands << file.rdbuf();
+
+	//ファイルを閉じる
+	file.close();
+
+}
+
+void GameScene::UpdateEnemyPopComands() {
+
+	//待機処理
+	if (commandIsWait) {
+		commandWaitTimer--;
+		if (commandWaitTimer <= 0) {
+			//待機完了
+			commandIsWait = false;
+		}
+		return;
+	}
+
+	//1行分の文字列を入れる変数
+	std::string line;
+
+	//コマンド実行ループ
+	while (getline(enemyPopCommands, line)) {
+		//1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line);
+
+		std::string word;
+		//,区切りで行の先頭文字列を取得
+		getline(line_stream, word, ',');
+
+		// "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			//コメント行を飛ばす
+			continue;
+		}
+
+		//POPコマンド
+		if (word.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+		
+			//敵を発生させる
+			// 敵キャラの生成
+			Enemy* enemy = new Enemy();
+			// 敵キャラの初期化
+			enemy->Initialize(model_, enemyTextureHandle_);
+			// 敵キャラに自キャラのアドレスを渡す
+			enemy->SetPlayer(player_);
+			// 敵キャラにゲームシーンのアドレスを渡す
+			enemy->SetGameScene(this);
+			//敵キャラに座標を渡す
+			enemy->SetWorldTransformTranslation(Vector3(x, y, z));
+
+			enemies_.push_back(enemy);
+
+		}
+
+		//WAITコマンド
+		else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			//待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			//待機開始
+			commandIsWait = true;
+			commandWaitTimer = waitTime;
+
+			//コマンドループを抜ける
+			break;
+		
+		}
+
+	}
 
 }

@@ -18,6 +18,7 @@
 #include "RailCamera.h"
 #include "CollisionManager.h"
 #include <list>
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -56,6 +57,16 @@ public: // メンバ関数
 	/// <param name="enemyBullet"></param>
 	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopComands();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
@@ -86,6 +97,12 @@ private: // メンバ変数
 	//敵キャラ
 	//Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemies_;
+	//敵の発生コマンド
+	std::stringstream enemyPopCommands;
+	//敵の発生コマンドの待機中フラグ
+	bool commandIsWait = false;
+	//敵の発生コマンドの待機中タイマー(フレーム)
+	size_t commandWaitTimer = 0;
 
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;

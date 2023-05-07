@@ -142,7 +142,7 @@ void GameScene::Update() {
 
 
 	//自キャラの更新
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	//敵発生コマンドの更新
 	UpdateEnemyPopComands();

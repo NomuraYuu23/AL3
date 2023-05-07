@@ -44,6 +44,8 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 // 座標変換
 Vector3 TransformNormal(const Vector3& vector, const Matrix4x4& matrix);
+// 座標変換
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
 // X軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian);
@@ -63,3 +65,15 @@ Vector3 CatmullRomSpline(const std::vector<Vector3>& controlPoints, const float&
 void CatmullRomSplineDraw(
     const std::vector<Vector3>& controlPoints, size_t segmentCount,
     const ViewProjection* viewProjection);
+
+
+// 正射影行列
+Matrix4x4 MakeOrthographicMatrix(
+    float left, float top, float right, float bottom, float nearClip, float farClip);
+
+// 透視投影行列
+Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
+
+// ビューポート変換行列
+Matrix4x4 MakeViewportMatrix(
+    float left, float top, float width, float height, float minDepth, float maxDepth);

@@ -118,6 +118,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
     <ClCompile Include="RailCamera.cpp" />
+    <ClCompile Include="RenderingPipeline.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="TimedCall.cpp" />

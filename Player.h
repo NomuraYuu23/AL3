@@ -18,7 +18,7 @@ class Player : public Collider{
 		//初期化
 	    void Initialize(Model* model, uint32_t textureHandle);
 		//更新
-	    void Update();
+	    void Update(ViewProjection viewProjection);
 		//描画
 	    void Draw(ViewProjection viewProjection);
 		

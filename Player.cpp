@@ -42,11 +42,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	//スプライト生成
 	sprite2DReticle_ = Sprite::Create(
-	    textureReticle, Vector2(10.0f, 10.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
+	    textureReticle, Vector2(0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
 
 }
 
-void Player::Update() {
+void Player::Update(ViewProjection viewProjection) {
 
 	//デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -134,7 +134,17 @@ void Player::Update() {
 	Vector3 positionRecticle = Get3DReticleWorldPosition();
 	
 	//ビューポート行列
-	Matrix4x4 matViewport;
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+	//ビュー行列とプロジェクション行列,ビューポート行列を合成する
+	Matrix4x4 matViewProjectionViewport =
+	    Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport));
+
+	//ワールドスクリーン座標変換(ここで3Dから2Dになる)
+	positionRecticle = Transform(positionRecticle, matViewProjectionViewport);
+
+	//スプライトのレティクルに座標設定
+	sprite2DReticle_->SetPosition(Vector2(positionRecticle.x, positionRecticle.y));
 
 }
 
@@ -148,7 +158,7 @@ void Player::Draw(ViewProjection viewProjection) {
 	}
 
 	//3Dレティクルを描画
-	model_->Draw(worldTransform3DReticle_, viewProjection);
+	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
 }
 

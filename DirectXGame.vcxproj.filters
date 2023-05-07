@@ -105,6 +105,9 @@
     <ClCompile Include="CatmullRomSpline.cpp">
       <Filter>ソース ファイル\math</Filter>
     </ClCompile>
+    <ClCompile Include="RenderingPipeline.cpp">
+      <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
@@ -219,7 +222,7 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="AL3Math.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

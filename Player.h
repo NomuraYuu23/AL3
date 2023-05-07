@@ -45,6 +45,9 @@ class Player : public Collider{
 		//UI描画
 	    void DrawUI();
 
+		//マウスレティクル
+	    void MouseReticle(ViewProjection viewProjection);
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;

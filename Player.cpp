@@ -31,6 +31,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	//衝突対象を自分の属性以外に設定
 	SetCollisionMask(0x00000001);
 
+	//3Dレティクルのワールドトランスフォーム初期化
+	worldTransform3DReticle_.Initialize();
+
 }
 
 void Player::Update() {
@@ -102,16 +105,20 @@ void Player::Update() {
 		bullet->Update();
 	}
 
-	/*
-	//アフィン変換行列の作成
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
-
-	// 行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
-	*/
-
 	worldTransform_.UpdateMatrix();
+
+	// 3Dレティクルの配置
+	// 自機から3Dレティクルへの距離
+	const float kDistancePlayerTo3DReticle = 30.0f;
+	// 自機から3Dレティクルへのオフセット(z+向き)
+	Vector3 offset = {0, 0, 1.0f};
+	// 自機のワールド行列の回転を反映
+	offset = TransformNormal(offset, worldTransform_.matWorld_);
+	//ベクトルの長さを整える
+	offset = Multiply(kDistancePlayerTo3DReticle, Normalize(offset));
+	//3Dレティクルの座標を指定
+	worldTransform3DReticle_.translation_ = Add(offset, worldTransform_.translation_);
+	worldTransform3DReticle_.UpdateMatrix();
 
 }
 
@@ -123,6 +130,9 @@ void Player::Draw(ViewProjection viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
+
+	//3Dレティクルを描画
+	model_->Draw(worldTransform3DReticle_, viewProjection);
 
 }
 
@@ -146,10 +156,11 @@ void Player::Attack() {
 
 		//弾の速度
 		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
+		Vector3 velocity(0, 0, 0);
 
 		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+		velocity = Subtract(Get3DReticleWorldPosition(), GetWorldPosition());
+		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
 		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -186,4 +197,18 @@ void Player::OnCollision() {
 	// 親となるワールドトランスフォームをセット
 void Player::SetParent(const WorldTransform* parent) {
 	worldTransform_.parent_ = parent; 
+}
+
+// 3DReticleのワールド座標を取得
+Vector3 Player::Get3DReticleWorldPosition() {
+
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform3DReticle_.matWorld_.m[3][0];
+	worldPos.y = worldTransform3DReticle_.matWorld_.m[3][1];
+	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
+
+	return worldPos;
+
 }

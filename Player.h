@@ -38,6 +38,9 @@ class Player : public Collider{
 		//親となるワールドトランスフォームをセット
 	    void SetParent(const WorldTransform* parent);
 
+		// 3DReticleのワールド座標を取得
+		Vector3 Get3DReticleWorldPosition();
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
@@ -51,5 +54,8 @@ class Player : public Collider{
 
 		//弾
 	    std::list<PlayerBullet*> bullets_;
+
+		//3Dレティクル用ワールドトランスフォーム
+	    WorldTransform worldTransform3DReticle_;
 
 };

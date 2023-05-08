@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include "Enemy.h"
 
 		// デストラクタ
 Player::~Player() {
@@ -9,6 +10,7 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
+
 
 	//スプライトの解放
 	delete sprite2DReticle_;
@@ -107,14 +109,6 @@ void Player::Update(ViewProjection viewProjection) {
 	    worldTransform_.rotation_.z);
 	ImGui::End();
 
-	//キャラクター攻撃処理
-	Attack();
-
-	//弾更新
-	for (PlayerBullet* bullet : bullets_) {
-		bullet->Update();
-	}
-
 	worldTransform_.UpdateMatrix();
 
 	// 3Dレティクルの配置
@@ -143,8 +137,19 @@ void Player::Update(ViewProjection viewProjection) {
 	//ワールドスクリーン座標変換(ここで3Dから2Dになる)
 	positionRecticle = Transform(positionRecticle, matViewProjectionViewport);
 
+	//敵とレティクルの当たり判定
+	positionRecticle = SingleLockon(matViewProjectionViewport, positionRecticle);
+
 	//スプライトのレティクルに座標設定
 	sprite2DReticle_->SetPosition(Vector2(positionRecticle.x, positionRecticle.y));
+
+	// キャラクター攻撃処理
+	Attack();
+
+	// 弾更新
+	for (PlayerBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 
 }
 
@@ -185,7 +190,7 @@ void Player::Attack() {
 		Vector3 velocity(0, 0, 0);
 
 		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Subtract(Get3DReticleWorldPosition(), GetWorldPosition());
+		velocity = Subtract(LockonEnemyPosition, GetWorldPosition());
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
 		//弾を生成し、初期化
@@ -243,5 +248,34 @@ Vector3 Player::Get3DReticleWorldPosition() {
 void Player::DrawUI() {
 
 	sprite2DReticle_->Draw();
+
+}
+
+// シングルロックオン
+Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle) {
+
+	isLockon = false;
+	LockonEnemyPosition = Get3DReticleWorldPosition();
+
+	for (Enemy* enemy : enemies_) {
+		Vector3 positionEnemy = enemy->GetWorldPosition();
+		positionEnemy = Transform(positionEnemy, matViewProjectionViewport);
+
+		float distance = std::sqrtf(
+		    std::powf(positionEnemy.x - positionRecticle.x, 2.0f) +
+		    std::powf(positionEnemy.y - positionRecticle.y, 2.0f)); 
+
+		if (distance < sprite2DReticle_->GetSize().x + enemy->GetRadius()) {
+		
+			positionRecticle = positionEnemy;
+			isLockon = true;
+			LockonEnemyPosition = enemy->GetWorldPosition();
+			break;
+
+		}
+
+	}
+
+	return positionRecticle;
 
 }

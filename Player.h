@@ -49,6 +49,9 @@ class Player : public Collider{
 
 		void SetEnemies(std::list<Enemy*> enemies) { enemies_ = enemies; }
 
+		//シングルロックオン
+	    Vector3 SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle);
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
@@ -71,5 +74,11 @@ class Player : public Collider{
 
 		//敵キャラ
 	    std::list<Enemy*> enemies_;
+
+		//ロックオン出来たか
+	    bool isLockon = false;
+
+		//ロックオンエネミーポジション
+	    Vector3 LockonEnemyPosition;
 
 };

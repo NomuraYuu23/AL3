@@ -72,8 +72,6 @@ void GameScene::Initialize() {
 	player_->Initialize(model_, playerTextureHandle_);
 	//自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldMatrix());
-	//自キャラに敵キャラのアドレスを渡す
-	player_->SetEnemies(enemies_);
 
 	//敵キャラの生成
 	Enemy* enemy = new Enemy();
@@ -85,6 +83,8 @@ void GameScene::Initialize() {
 	enemy->SetGameScene(this);
 
 	enemies_.push_back(enemy);
+	// 自キャラに敵キャラのアドレスを渡す
+	player_->SetEnemies(enemies_);
 
 	// 天球の生成
 	skydome_ = new Skydome();
@@ -160,6 +160,9 @@ void GameScene::Update() {
 		}
 		return false;
 	});
+	// 自キャラに敵キャラのアドレスを渡す
+	player_->SetEnemies(enemies_);
+
 
 	//敵弾の処理
 	// デスフラグの立った敵弾を削除
@@ -343,6 +346,8 @@ void GameScene::UpdateEnemyPopComands() {
 			enemy->SetWorldTransformTranslation(Vector3(x, y, z));
 
 			enemies_.push_back(enemy);
+			// 自キャラに敵キャラのアドレスを渡す
+			player_->SetEnemies(enemies_);
 
 		}
 

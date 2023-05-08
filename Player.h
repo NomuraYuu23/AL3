@@ -9,6 +9,8 @@
 #include "Collider.h"
 #include <Sprite.h>
 
+class Enemy;
+
 //---自キャラクラス---//
 class Player : public Collider{
 
@@ -45,6 +47,8 @@ class Player : public Collider{
 		//UI描画
 	    void DrawUI();
 
+		void SetEnemies(std::list<Enemy*> enemies) { enemies_ = enemies; }
+
 	private:
 		//ワールド変換データ
 	    WorldTransform worldTransform_;
@@ -64,5 +68,8 @@ class Player : public Collider{
 
 		//2Dレティクル用のスプライト
 	    Sprite* sprite2DReticle_ = nullptr;
+
+		//敵キャラ
+	    std::list<Enemy*> enemies_;
 
 };

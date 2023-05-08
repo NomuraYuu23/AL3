@@ -72,6 +72,8 @@ void GameScene::Initialize() {
 	player_->Initialize(model_, playerTextureHandle_);
 	//自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldMatrix());
+	//自キャラに敵キャラのアドレスを渡す
+	player_->SetEnemies(enemies_);
 
 	//敵キャラの生成
 	Enemy* enemy = new Enemy();

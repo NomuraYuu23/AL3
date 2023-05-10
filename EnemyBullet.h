@@ -1,6 +1,6 @@
 #pragma once
 #include "Model.h"
-// #include "WorldTransform.h"
+#include "WorldTransform.h"
 
 #include "Collider.h"
 

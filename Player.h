@@ -75,6 +75,8 @@ class Player : public Collider{
 		//敵キャラ
 	    std::list<Enemy*> enemies_;
 
+		Enemy* lockonEnemy = nullptr;
+
 		//ロックオンポジション
 	    Vector3 lockonPosition;
 		//ロックオン移動開始地点

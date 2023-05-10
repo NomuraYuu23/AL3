@@ -196,6 +196,7 @@ void Player::Attack() {
 		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+		newBullet->SetEnemy(lockonEnemy);
 
 		//弾を登録する
 		bullets_.push_back(newBullet);
@@ -264,24 +265,29 @@ Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positi
 
 		if (distance < sprite2DReticle_->GetSize().x + enemy->GetRadius()) {
 		
+			//敵をロックオン
 			positionRecticle = positionEnemy;
 			lockonPosition = enemy->GetWorldPosition();
 			lockonPositionStart = lockonPosition;
 			lockonT = 0;
+			lockonEnemy = enemy;
+			sprite2DReticle_->SetColor(Vector4(1.0f, 0.0f, 0.0f, 1.0f));
 			return positionRecticle;
 
 		}
 
 	}
 
-	lockonPosition =
-	    Add(Multiply((1.0f - lockonT), lockonPositionStart),
-	        Multiply(lockonT, Get3DReticleWorldPosition()));
+	//線形補間で移動
+	lockonPosition = Lerp(lockonPositionStart, Get3DReticleWorldPosition(), lockonT);
 	if (lockonT >= 1.0f) {
 		lockonT = 1.0f;
 	} else {
 		lockonT += 0.025f;
 	}
+	sprite2DReticle_->SetColor(Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+	lockonEnemy = nullptr;
+
 	return Transform(lockonPosition, matViewProjectionViewport);
 
 }

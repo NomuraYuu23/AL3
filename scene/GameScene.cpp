@@ -150,7 +150,13 @@ void GameScene::Update() {
 	UpdateEnemyPopComands();
 	// 敵キャラの更新
 	for (Enemy* enemy : enemies_) {
-		enemy->Update();
+		enemy->Update(); 
+		// 自弾全てについて
+		for (PlayerBullet* playerBullet : player_->GetBullets()) {
+			if (enemy->IsDead() && playerBullet->GetEnemy() == enemy) {
+				playerBullet->SetEnemy(nullptr);
+			}
+		}
 	}
 	// デスフラグの立った敵を削除
 	enemies_.remove_if([](Enemy* enemy) {

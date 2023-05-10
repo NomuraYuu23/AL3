@@ -1,8 +1,10 @@
 #pragma once
 #include "Model.h"
-//#include "WorldTransform.h"
+#include "WorldTransform.h"
 
 #include "Collider.h"
+
+class Enemy;
 
 class PlayerBullet : public Collider {
 
@@ -20,6 +22,10 @@ class PlayerBullet : public Collider {
 	
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnCollision() override;
+
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	
+	Enemy* GetEnemy() { return enemy_; }
 
 	private:
 	// ワールド変換データ
@@ -39,5 +45,8 @@ class PlayerBullet : public Collider {
 	int32_t deathTimer_ = kLifeTime;
 	//デスフラグ
 	bool isDead_ = false;
+
+	//エネミー
+	Enemy* enemy_ = nullptr;
 
 };

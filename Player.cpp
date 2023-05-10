@@ -163,7 +163,7 @@ void Player::Draw(ViewProjection viewProjection) {
 	}
 
 	//3Dレティクルを描画
-	//model_->Draw(worldTransform3DReticle_, viewProjection);
+	model_->Draw(worldTransform3DReticle_, viewProjection);
 
 }
 
@@ -190,7 +190,7 @@ void Player::Attack() {
 		Vector3 velocity(0, 0, 0);
 
 		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Subtract(LockonEnemyPosition, GetWorldPosition());
+		velocity = Subtract(lockonPosition, GetWorldPosition());
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
 		//弾を生成し、初期化
@@ -254,9 +254,6 @@ void Player::DrawUI() {
 // シングルロックオン
 Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle) {
 
-	isLockon = false;
-	LockonEnemyPosition = Get3DReticleWorldPosition();
-
 	for (Enemy* enemy : enemies_) {
 		Vector3 positionEnemy = enemy->GetWorldPosition();
 		positionEnemy = Transform(positionEnemy, matViewProjectionViewport);
@@ -268,14 +265,23 @@ Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positi
 		if (distance < sprite2DReticle_->GetSize().x + enemy->GetRadius()) {
 		
 			positionRecticle = positionEnemy;
-			isLockon = true;
-			LockonEnemyPosition = enemy->GetWorldPosition();
-			break;
+			lockonPosition = enemy->GetWorldPosition();
+			lockonPositionStart = lockonPosition;
+			lockonT = 0;
+			return positionRecticle;
 
 		}
 
 	}
 
-	return positionRecticle;
+	lockonPosition =
+	    Add(Multiply((1.0f - lockonT), lockonPositionStart),
+	        Multiply(lockonT, Get3DReticleWorldPosition()));
+	if (lockonT >= 1.0f) {
+		lockonT = 1.0f;
+	} else {
+		lockonT += 0.025f;
+	}
+	return Transform(lockonPosition, matViewProjectionViewport);
 
 }

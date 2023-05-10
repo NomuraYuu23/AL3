@@ -75,10 +75,15 @@ class Player : public Collider{
 		//敵キャラ
 	    std::list<Enemy*> enemies_;
 
-		//ロックオン出来たか
-	    bool isLockon = false;
-
-		//ロックオンエネミーポジション
-	    Vector3 LockonEnemyPosition;
+		//ロックオンポジション
+	    Vector3 lockonPosition;
+		//ロックオン移動開始地点
+	    Vector3 lockonPositionStart = {
+	        0.0f,
+	        0.0f,
+	        0.0f
+	    };
+		//ロックオン線形補間t
+	    float lockonT = 1.0f;
 
 };

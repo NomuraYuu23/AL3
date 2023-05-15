@@ -51,6 +51,8 @@ class Player : public Collider{
 
 		//シングルロックオン
 	    Vector3 SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle);
+		//マルチロックオン
+	    void MultiLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle);
 
 	private:
 		//ワールド変換データ
@@ -71,6 +73,13 @@ class Player : public Collider{
 
 		//2Dレティクル用のスプライト
 	    Sprite* sprite2DReticle_ = nullptr;
+
+		//マルチロックオン
+	    std::list<WorldTransform*> multi3DReticles_;
+
+		std::list<Sprite*> multi2DReticles_;
+
+		uint32_t multiTextureReticle;
 
 		//敵キャラ
 	    std::list<Enemy*> enemies_;

@@ -14,6 +14,12 @@ Player::~Player() {
 
 	//スプライトの解放
 	delete sprite2DReticle_;
+	for (WorldTransform* multi3DReticle : multi3DReticles_) {
+		delete multi3DReticle;
+	}
+	for (Sprite* multi2DReticle : multi2DReticles_) {
+		delete multi2DReticle;
+	}
 
 }
 
@@ -40,7 +46,9 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	worldTransform3DReticle_.Initialize();
 
 	//レティクル用テクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("./Resources/Reticle.png");
+	uint32_t textureReticle = TextureManager::Load("./Resources/Reticle2.png");
+
+	multiTextureReticle = TextureManager::Load("./Resources/Reticle.png");
 
 	//スプライト生成
 	sprite2DReticle_ = Sprite::Create(
@@ -138,7 +146,13 @@ void Player::Update(ViewProjection viewProjection) {
 	positionRecticle = Transform(positionRecticle, matViewProjectionViewport);
 
 	//敵とレティクルの当たり判定
-	positionRecticle = SingleLockon(matViewProjectionViewport, positionRecticle);
+	//positionRecticle = SingleLockon(matViewProjectionViewport, positionRecticle);
+	
+	//マルチロックオン
+	MultiLockon(matViewProjectionViewport, positionRecticle);
+
+	//lockonPosition
+	lockonPosition = worldTransform3DReticle_.translation_;
 
 	//スプライトのレティクルに座標設定
 	sprite2DReticle_->SetPosition(Vector2(positionRecticle.x, positionRecticle.y));
@@ -189,6 +203,8 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, 0);
 
+		/*
+
 		//速度ベクトルを自機の向きに合わせて回転させる
 		velocity = Subtract(lockonPosition, GetWorldPosition());
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
@@ -200,6 +216,43 @@ void Player::Attack() {
 
 		//弾を登録する
 		bullets_.push_back(newBullet);
+
+		*/
+
+		bool isAttack = false;
+		for (WorldTransform* multi3DReticle : multi3DReticles_) {
+			if (isAttack == false) {
+				isAttack = true;
+			}
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = Subtract(
+			    Vector3(
+			        multi3DReticle->matWorld_.m[3][0], multi3DReticle->matWorld_.m[3][1],
+			        multi3DReticle->matWorld_.m[3][2]),
+			    GetWorldPosition());
+			velocity = Multiply(kBulletSpeed, Normalize(velocity));
+
+			// 弾を生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(model_, GetWorldPosition(), velocity);
+			newBullet->SetEnemy(lockonEnemy);
+
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+		}
+		if (isAttack == false) {
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			velocity = Subtract(lockonPosition, GetWorldPosition());
+			velocity = Multiply(kBulletSpeed, Normalize(velocity));
+
+			// 弾を生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(model_, GetWorldPosition(), velocity);
+			newBullet->SetEnemy(lockonEnemy);
+
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+		}
 
 	}
 
@@ -249,6 +302,9 @@ Vector3 Player::Get3DReticleWorldPosition() {
 void Player::DrawUI() {
 
 	sprite2DReticle_->Draw();
+	for (Sprite* multi2DReticle : multi2DReticles_) {
+		multi2DReticle->Draw();
+	}
 
 }
 
@@ -263,7 +319,7 @@ Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positi
 		    std::powf(positionEnemy.x - positionRecticle.x, 2.0f) +
 		    std::powf(positionEnemy.y - positionRecticle.y, 2.0f)); 
 
-		if (distance < sprite2DReticle_->GetSize().x + enemy->GetRadius()) {
+		if (distance < sprite2DReticle_->GetSize().x / 2.0f + enemy->GetRadius()) {
 		
 			//敵をロックオン
 			positionRecticle = positionEnemy;
@@ -289,5 +345,52 @@ Vector3 Player::SingleLockon(Matrix4x4 matViewProjectionViewport, Vector3 positi
 	lockonEnemy = nullptr;
 
 	return Transform(lockonPosition, matViewProjectionViewport);
+
+}
+
+// マルチロックオン
+void Player::MultiLockon(Matrix4x4 matViewProjectionViewport, Vector3 positionRecticle) {
+
+	multi3DReticles_.remove_if([](WorldTransform* multi3DReticle) {
+		delete multi3DReticle;
+			return true;
+	});
+
+	multi2DReticles_.remove_if([](Sprite* multi2DReticle) {
+		delete multi2DReticle;
+		return true;
+	});
+
+
+	for (Enemy* enemy : enemies_) {
+		Vector3 positionEnemy = enemy->GetWorldPosition();
+		positionEnemy = Transform(positionEnemy, matViewProjectionViewport);
+
+		float distance = std::sqrtf(
+		    std::powf(positionEnemy.x - positionRecticle.x, 2.0f) +
+		    std::powf(positionEnemy.y - positionRecticle.y, 2.0f));
+
+		if (distance < sprite2DReticle_->GetSize().x / 2.0f + enemy->GetRadius()) {
+
+		// 敵をロックオン
+		//std::list<WorldTransform*> multi3DReticles_;
+		WorldTransform* newMulti3DReticle = new WorldTransform();
+		newMulti3DReticle->Initialize();
+		newMulti3DReticle->translation_ = enemy->GetWorldTransformTranslation();
+		newMulti3DReticle->UpdateMatrix();
+
+		multi3DReticles_.push_back(newMulti3DReticle);
+
+		//std::list<Sprite*> multi2DReticles_;
+		Sprite* newSprite = new Sprite();
+		Vector3 position3DReticle =
+			Transform(newMulti3DReticle->translation_, matViewProjectionViewport);
+		newSprite = Sprite::Create(
+			multiTextureReticle, Vector2(position3DReticle.x, position3DReticle.y),
+			Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
+		multi2DReticles_.push_back(newSprite);
+
+		}
+	}
 
 }

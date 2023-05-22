@@ -2,7 +2,7 @@
 #include <cassert>
 #include "ImGuiManager.h"
 
-		// デストラクタ
+// デストラクタ
 Player::~Player() {
 
 	//bullet_の解放

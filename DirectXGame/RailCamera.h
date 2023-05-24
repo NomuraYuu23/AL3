@@ -11,7 +11,7 @@ public:
 	void Initialize(const Vector3& position, const Vector3& rotation);
 
 	//更新
-	void Update(const std::vector<Vector3>& controlPoints);
+	void Update();
 
 	/// <summary>
 	/// ビュープロジェクションを取得

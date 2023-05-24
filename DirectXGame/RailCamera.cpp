@@ -1,5 +1,6 @@
 #include "RailCamera.h"
 #include "ImGuiManager.h"
+#include <Input.h>
 
 // 初期化
 void RailCamera::Initialize(const Vector3& position, const Vector3& rotation) {
@@ -16,12 +17,27 @@ void RailCamera::Initialize(const Vector3& position, const Vector3& rotation) {
 }
 
 // 更新
-void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
+void RailCamera::Update() {
+
+	// ゲームパッドの状態を得る変数(XINPUT)
+	XINPUT_STATE joyState;
+
+	// キャラクターの移動ベクトル
+	Vector3 rotate = {0, 0, 0};
+
+	// キャラクターの移動速さ
+	const float kCharacterSpeed = 0.01f;
+
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		rotate.y += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
+		rotate.x -= (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
+	}
 
 	//ワールドトランスフォームの座標の数値を加算したりする(移動)
-	//worldTransform_.translation_ = Add(worldTransform_.translation_, translationVelocity);
+	//worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	//ワールドトランスフォームの角度の数値を加算したりする(回転)
-	//worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotationVelocity);
+	worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotate);
 	
 	// カメラの座標を画面表示する処理
 	ImGui::Begin("Camera");
@@ -42,13 +58,15 @@ void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
 	worldTransform_.rotation_.z = float3[2];
 
 	ImGui::End();
-	
+
+	/*
+
 	//tを進める
 	t += velocity;
 	if (t >= 1.0f) {
 		t = 1.0f;
 	} else {
-		eye = CatmullRomSpline(controlPoints, t);
+		eye = worldTransform_.translation_;
 		float targetT = t + velocity * targetDistance;
 		if (targetT >= 1.0f) {
 			targetT = 1.0f;
@@ -56,7 +74,7 @@ void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
 		target = CatmullRomSpline(controlPoints, targetT);
 
 		// eyeをワールドトランスフォームに
-		worldTransform_.translation_ = eye;
+		//worldTransform_.translation_ = eye;
 		// eyeとtargetの差分ベクトル
 		Vector3 forward = Subtract(target, eye);
 		// ベクトルの正規化
@@ -70,13 +88,18 @@ void RailCamera::Update(const std::vector<Vector3>& controlPoints) {
 		worldTransform_.rotation_.x = std::atan2f(-forward.y, length);
 	}
 
+	*/
+
+	velocity = Subtract(Get3DReticleWorldPosition(), position);
+	velocity = Multiply(kBulletSpeed, Normalize(velocity));
+
 	//ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ =
 	    MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 
 	// debug
-	worldTransform_.matWorld_ = MakeAffineMatrix(
-	    worldTransform_.scale_, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -100.0f});
+	//worldTransform_.matWorld_ = MakeAffineMatrix(
+	  //  worldTransform_.scale_, Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, -100.0f});
 	// debugここまで
 
 	//カメラオブジェクトのワールド行列からビュー行列を計算する

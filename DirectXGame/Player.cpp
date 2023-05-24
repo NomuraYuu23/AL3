@@ -24,7 +24,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 	textureHandle_ = textureHandle;
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_.z = 50.0f;
+	//worldTransform_.translation_.z = 50.0f;
 
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -96,9 +96,9 @@ void Player::Update(ViewProjection viewProjection) {
 	*/
 
 	// 座標移動(ベクトルの加算)
-	worldTransform_.translation_.x += move.x;
-	worldTransform_.translation_.y += move.y;
-	worldTransform_.translation_.z += move.z;
+	//worldTransform_.translation_.x += move.x;
+	//worldTransform_.translation_.y += move.y;
+	//worldTransform_.translation_.z += move.z;
 
 	//移動限界座標
 	const float kMoveLimitX = 32.0f;
@@ -219,13 +219,17 @@ void Player::Attack() {
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, 0);
 
+		//弾の位置
+		Vector3 position = GetWorldPosition();
+		position.z += 5.0f;
+
 		//速度ベクトルを自機の向きに合わせて回転させる
-		velocity = Subtract(Get3DReticleWorldPosition(), GetWorldPosition());
+		velocity = Subtract(Get3DReticleWorldPosition(), position);
 		velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
 		//弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+		newBullet->Initialize(model_, position, velocity);
 
 		//弾を登録する
 		bullets_.push_back(newBullet);

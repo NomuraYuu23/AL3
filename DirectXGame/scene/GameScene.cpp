@@ -130,7 +130,7 @@ void GameScene::Update() {
 		//viewProjection_.UpdateMatrix();
 
 		// レールカメラ更新
-		railCamera_->Update(controlPoints_);
+		railCamera_->Update();
 
 		// レールカメラのビュー行列をコピー
 		viewProjection_.matView = railCamera_->GetViewProjection().matView;

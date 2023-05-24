@@ -22,23 +22,61 @@ void RailCamera::Update() {
 	// ゲームパッドの状態を得る変数(XINPUT)
 	XINPUT_STATE joyState;
 
-	// キャラクターの移動ベクトル
+	// キャラクターの回転ベクトル
 	Vector3 rotate = {0, 0, 0};
 
+	// キャラクターの回転速さ
+	const float kRotateSpeed = 0.02f;
+
+	// キャラクターの移動ベクトル
+	Vector3 move = {1.0f, 1.0f, 1.0f};
+
 	// キャラクターの移動速さ
-	const float kCharacterSpeed = 0.01f;
+	const float kMoveSpeed = 0.3f;
+
+	// ワールド座標
+	Vector3 worldPos;
 
 	// ジョイスティック状態取得
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		rotate.y += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
-		rotate.x -= (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
+		rotate.y += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kRotateSpeed;
+		rotate.x -= (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kRotateSpeed;
 	}
+	
+	// ワールドトランスフォームの角度の数値を加算したりする(回転)
+	worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotate);
+
+	// ワールドトランスフォームのワールド行列再計算
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+
+	// 距離
+	const float kMovePointDistance = 30.0f;
+	// オフセット(z+向き)
+	Vector3 offset = {0, 0, 1.0f};
+	// ワールド行列の回転を反映
+	offset = TransformNormal(offset, worldTransform_.matWorld_);
+	// ワールド座標を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	// ベクトルの長さを整える
+	offset = Multiply(kMovePointDistance, Normalize(offset));
+	// 座標を指定
+	Vector3 MovePoint = Add(offset, worldPos);
+
+	// 速度ベクトルを回転させる
+	move = Subtract(MovePoint, worldPos);
+	move = Multiply(kMoveSpeed, Normalize(move));
 
 	//ワールドトランスフォームの座標の数値を加算したりする(移動)
-	//worldTransform_.translation_ = Add(worldTransform_.translation_, move);
-	//ワールドトランスフォームの角度の数値を加算したりする(回転)
-	worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotate);
+	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	
+	// ワールドトランスフォームのワールド行列再計算
+	worldTransform_.matWorld_ = MakeAffineMatrix(
+	    worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+
+
 	// カメラの座標を画面表示する処理
 	ImGui::Begin("Camera");
 	float float3[3] = {
@@ -89,9 +127,6 @@ void RailCamera::Update() {
 	}
 
 	*/
-
-	velocity = Subtract(Get3DReticleWorldPosition(), position);
-	velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
 	//ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ =

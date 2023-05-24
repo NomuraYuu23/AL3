@@ -42,7 +42,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 	//スプライト生成
 	sprite2DReticle_ = Sprite::Create(
-	    textureReticle, Vector2(0.0f, 0.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
+	    textureReticle, Vector2(640.0f, 360.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector2(0.5f, 0.5f));
 
 }
 

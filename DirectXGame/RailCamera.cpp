@@ -49,7 +49,7 @@ void RailCamera::Update() {
 	
 	if (worldTransform_.rotation_.y < -float(std::numbers::pi)) {
 		worldTransform_.rotation_.y = worldTransform_.rotation_.y + float(std::numbers::pi) * 2.0f;
-	} else if (rotate.y > float(std::numbers::pi)) {
+	} else if (worldTransform_.rotation_.y > float(std::numbers::pi)) {
 		worldTransform_.rotation_.y = worldTransform_.rotation_.y - float(std::numbers::pi) * 2.0f;
 	}
 

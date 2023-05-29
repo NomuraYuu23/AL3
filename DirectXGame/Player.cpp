@@ -1,6 +1,7 @@
 #include "Player.h"
 #include <cassert>
 #include "ImGuiManager.h"
+#include <cmath>
 
 // デストラクタ
 Player::~Player() {
@@ -46,7 +47,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle) {
 
 }
 
-void Player::Update(ViewProjection viewProjection) {
+void Player::Update(ViewProjection viewProjection, RailCamera* railCamera) {
 
 	//デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -164,7 +165,7 @@ void Player::Update(ViewProjection viewProjection) {
 	*/
 
 	// キャラクター攻撃処理
-	Attack();
+	Attack(railCamera);
 
 	// 弾更新
 	for (PlayerBullet* bullet : bullets_) {
@@ -201,7 +202,7 @@ void Player::Rotate() {
 
 }
 // 攻撃
-void Player::Attack() {
+void Player::Attack(RailCamera* railCamera) {
 
 	// ゲームパッドの状態を得る変数(XINPUT)
 	XINPUT_STATE joyState;
@@ -221,7 +222,9 @@ void Player::Attack() {
 
 		//弾の位置
 		Vector3 position = GetWorldPosition();
-		position.z += 5.0f;
+		position.z += std::cosf(railCamera->GetWorldMatrix().rotation_.y) * 5.0f; // コサイン
+		position.x += std::sinf(railCamera->GetWorldMatrix().rotation_.y) * 5.0f;
+		position.y += std::sinf(railCamera->GetWorldMatrix().rotation_.x) * 5.0f;
 
 		//速度ベクトルを自機の向きに合わせて回転させる
 		velocity = Subtract(Get3DReticleWorldPosition(), position);

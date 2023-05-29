@@ -8,6 +8,7 @@
 
 #include "Collider.h"
 #include <Sprite.h>
+#include "RailCamera.h"
 
 //---自キャラクラス---//
 class Player : public Collider{
@@ -18,14 +19,14 @@ class Player : public Collider{
 		//初期化
 	    void Initialize(Model* model, uint32_t textureHandle);
 		//更新
-	    void Update(ViewProjection viewProjection);
+	    void Update(ViewProjection viewProjection,RailCamera* railCamera);
 		//描画
 	    void Draw(ViewProjection viewProjection);
 		
 		//旋回
 	    void Rotate();
 		//攻撃
-	    void Attack();
+	    void Attack(RailCamera* railCamera);
 
 		//ワールド座標を取得
 	    Vector3 GetWorldPosition() override;

@@ -32,7 +32,7 @@ void RailCamera::Update() {
 	Vector3 move = {1.0f, 1.0f, 1.0f};
 
 	// キャラクターの移動速さ
-	const float kMoveSpeed = 0.3f;
+	const float kMoveSpeed = 0.1f;
 
 	// ワールド座標
 	Vector3 worldPos;

@@ -59,7 +59,7 @@ void GameScene::Initialize() {
 
 	//レールカメラの生成
 	railCamera_ = new RailCamera();
-	railCamera_->Initialize(Vector3{0.0f, 0.0f, 0.0f}, Vector3{0.0f, 0.0f, 0.0f});
+	railCamera_->Initialize(Vector3{0.0f, 0.0f, -100.0f}, Vector3{0.0f, 0.0f, 0.0f});
 
 	//軸方向表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);

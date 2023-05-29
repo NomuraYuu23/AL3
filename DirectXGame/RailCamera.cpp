@@ -83,7 +83,7 @@ void RailCamera::Update() {
 	move = Multiply(kMoveSpeed, Normalize(move));
 
 	//ワールドトランスフォームの座標の数値を加算したりする(移動)
-	//worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	
 	// ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ = MakeAffineMatrix(

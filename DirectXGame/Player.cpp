@@ -222,9 +222,12 @@ void Player::Attack(RailCamera* railCamera) {
 
 		//弾の位置
 		Vector3 position = GetWorldPosition();
-		position.z += std::cosf(railCamera->GetWorldMatrix().rotation_.y) * 5.0f; // コサイン
-		position.x += std::sinf(railCamera->GetWorldMatrix().rotation_.y) * 5.0f;
-		position.y += std::sinf(railCamera->GetWorldMatrix().rotation_.x) * 5.0f;
+		position.z += std::cosf(railCamera->GetWorldMatrix().rotation_.y) *
+		              std::cosf(railCamera->GetWorldMatrix().rotation_.x) * 5.0f; // コサイン
+		position.x += std::sinf(railCamera->GetWorldMatrix().rotation_.y) *
+		              std::cosf(railCamera->GetWorldMatrix().rotation_.x) * 5.0f;
+		position.y += -std::sinf(railCamera->GetWorldMatrix().rotation_.x) *
+		              std::cosf(railCamera->GetWorldMatrix().rotation_.z) * 5.0f;
 
 		//速度ベクトルを自機の向きに合わせて回転させる
 		velocity = Subtract(Get3DReticleWorldPosition(), position);

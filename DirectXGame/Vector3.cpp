@@ -103,8 +103,15 @@ Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t) {
 	//補間係数
 	float Ps = std::sinf(angle * (1 - t));
 	float Pe = std::sinf(angle * t);
+	
+	Vector3 result;
 
-	Vector3 result = Multiply( 1.0f / std::sinf(angle), Add( Multiply(Ps, start), Multiply(Pe, end)));
+	if (std::sinf(angle) == 0.0f) {
+		//線形補間へ
+		result = Lerp(v1, v2, t);
+	} else {
+		result = Multiply(1.0f / std::sinf(angle), Add(Multiply(Ps, start), Multiply(Pe, end)));
+	}
 
 	return result;
 

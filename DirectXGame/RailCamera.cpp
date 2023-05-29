@@ -1,6 +1,7 @@
 #include "RailCamera.h"
 #include "ImGuiManager.h"
 #include <Input.h>
+#include <numbers>
 
 // 初期化
 void RailCamera::Initialize(const Vector3& position, const Vector3& rotation) {
@@ -45,6 +46,18 @@ void RailCamera::Update() {
 	
 	// ワールドトランスフォームの角度の数値を加算したりする(回転)
 	worldTransform_.rotation_ = Add(worldTransform_.rotation_, rotate);
+	
+	if (worldTransform_.rotation_.y < -float(std::numbers::pi)) {
+		worldTransform_.rotation_.y = worldTransform_.rotation_.y + float(std::numbers::pi) * 2.0f;
+	} else if (rotate.y > float(std::numbers::pi)) {
+		worldTransform_.rotation_.y = worldTransform_.rotation_.y - float(std::numbers::pi) * 2.0f;
+	}
+
+	if (worldTransform_.rotation_.x < -float(std::numbers::pi) / 2.0f) {
+		worldTransform_.rotation_.x = -float(std::numbers::pi) / 2.0f;
+	} else if (worldTransform_.rotation_.x > float(std::numbers::pi) / 2.0f) {
+		worldTransform_.rotation_.x = float(std::numbers::pi) / 2.0f;
+	}
 
 	// ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ = MakeAffineMatrix(
@@ -70,7 +83,7 @@ void RailCamera::Update() {
 	move = Multiply(kMoveSpeed, Normalize(move));
 
 	//ワールドトランスフォームの座標の数値を加算したりする(移動)
-	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	//worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	
 	// ワールドトランスフォームのワールド行列再計算
 	worldTransform_.matWorld_ = MakeAffineMatrix(

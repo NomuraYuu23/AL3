@@ -56,7 +56,7 @@ void EnemyBullet::Update() {
 	// 弾の速度
 	const float kBulletSpeed = 0.5f;
 	//球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
-	velocity_ = Multiply( kBulletSpeed, Slerp(velocity_, toPlayer, t));
+	velocity_ = Multiply(kBulletSpeed, Slerp(velocity_, toPlayer, t));
 	//進行方向に見た目の回転を合わせる
 	// Y軸周りの角度(Θy)
 	worldTransform_.rotation_.y = std::atan2f(velocity_.x, velocity_.z);

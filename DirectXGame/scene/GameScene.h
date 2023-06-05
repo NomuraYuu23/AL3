@@ -10,13 +10,6 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "AL3Math.h"
-#include "Collider.h"
-#include "Player.h"
-#include "Enemy.h"
-#include "EnemyBullet.h"
-#include "Skydome.h"
-#include "RailCamera.h"
-#include "CollisionManager.h"
 #include <list>
 #include <sstream>
 
@@ -50,22 +43,6 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-	
-	/// <summary>
-	/// 敵弾を追加する
-	/// </summary>
-	/// <param name="enemyBullet"></param>
-	void AddEnemyBullet(EnemyBullet* enemyBullet);
-
-	/// <summary>
-	/// 敵発生データの読み込み
-	/// </summary>
-	void LoadEnemyPopData();
-
-	/// <summary>
-	/// 敵発生コマンドの更新
-	/// </summary>
-	void UpdateEnemyPopComands();
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -87,40 +64,6 @@ private: // メンバ変数
 	bool isDebugCameraActive_ = false;
 	//デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
-
-	//レールカメラ
-	RailCamera* railCamera_ = nullptr;
-
-	//自キャラ
-	Player* player_ = nullptr;
-
-	//敵キャラ
-	//Enemy* enemy_ = nullptr;
-	std::list<Enemy*> enemies_;
-	//敵の発生コマンド
-	std::stringstream enemyPopCommands;
-	//敵の発生コマンドの待機中フラグ
-	bool commandIsWait = false;
-	//敵の発生コマンドの待機中タイマー(フレーム)
-	size_t commandWaitTimer = 0;
-
-	// 弾
-	std::list<EnemyBullet*> enemyBullets_;
-
-	//天球
-	Skydome* skydome_ = nullptr;
-
-	//衝突マネージャー
-	std::unique_ptr<CollisionManager> collisionManager;
-
-	std::vector<Vector3> controlPoints_ = {
-	    {0,  0,   0},
-        {10, 10, 10},
-        {10, 15, 10},
-        {20, 15, 10},
-        {20, 0,  20},
-        {30, 0,  20},
-	};
 
 	/// <summary>
 	/// ゲームシーン用

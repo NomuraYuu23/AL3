@@ -20,6 +20,8 @@ public:
 
 private:
 	//ワールド変換データ
-	World
+	WorldTransform worldTransform_;
+	//
+
 
 };

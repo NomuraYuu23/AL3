@@ -9,7 +9,6 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
-	delete model_;
 
 }
 
@@ -21,13 +20,20 @@ void GameScene::Initialize() {
 
 	playerTextureHandle_ = TextureManager::Load("AL3_01.png");
 	
-	model_ = Model::Create();
+	model_.reset(Model::Create());
 
 	viewProjection_.Initialize();
+
+	//自キャラ生成
+	player_ = std::make_unique<Player>();
+	//自キャラの初期化
+	player_->Initialize(model_.get(), playerTextureHandle_);
 
 }
 
 void GameScene::Update() {
+
+	player_->Update();
 
 }
 
@@ -57,6 +63,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	
+	//自キャラの描画
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

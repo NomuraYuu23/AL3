@@ -13,6 +13,9 @@
 #include <list>
 #include <sstream>
 
+#include <memory>
+#include "Player.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -54,7 +57,7 @@ private: // メンバ変数
 	uint32_t enemyTextureHandle_ = 0;
 
 	//---3Dモデル---//
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_ = nullptr;
 	Model* modelSkydome_ = nullptr;
 
 	//---ビュープロジェクション---//
@@ -68,4 +71,8 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+
+	//Player* player_ = nullptr;
+	std::unique_ptr<Player> player_;
+
 };

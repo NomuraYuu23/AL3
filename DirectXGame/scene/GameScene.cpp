@@ -9,7 +9,7 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
-
+	delete model_;
 
 }
 
@@ -18,6 +18,12 @@ void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
+
+	playerTextureHandle_ = TextureManager::Load("AL3_01.png");
+	
+	model_ = Model::Create();
+
+	viewProjection_.Initialize();
 
 }
 

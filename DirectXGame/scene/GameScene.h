@@ -9,7 +9,6 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
-#include "AL3Math.h"
 #include <list>
 #include <sstream>
 

@@ -1,9 +1,8 @@
-#include "Vector3.h"
-#include "AL3Math.h"
+#include "Vector3Calc.h"
 #include <cmath>
 
 // 加算
-Vector3 Add(const Vector3& v1, const Vector3& v2) {
+Vector3 Vector3Calc::Add(const Vector3& v1, const Vector3& v2) {
 
 	Vector3 result;
 
@@ -13,7 +12,7 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 }
 
 // 減算
-Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
+Vector3 Vector3Calc::Subtract(const Vector3& v1, const Vector3& v2) {
 
 	Vector3 result;
 
@@ -23,7 +22,7 @@ Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
 }
 
 // スカラー倍
-Vector3 Multiply(float scalar, const Vector3& v) {
+Vector3 Vector3Calc::Vector3Calc::Multiply(float scalar, const Vector3& v) {
 
 	Vector3 result;
 
@@ -33,7 +32,7 @@ Vector3 Multiply(float scalar, const Vector3& v) {
 }
 
 // 内積
-float Dot(const Vector3& v1, const Vector3& v2) {
+float Vector3Calc::Dot(const Vector3& v1, const Vector3& v2) {
 
 	float result;
 
@@ -43,7 +42,7 @@ float Dot(const Vector3& v1, const Vector3& v2) {
 }
 
 // 長さ（ノルム）
-float Length(const Vector3& v) {
+float Vector3Calc::Length(const Vector3& v) {
 
 	float result;
 
@@ -53,7 +52,7 @@ float Length(const Vector3& v) {
 }
 
 // 正規化
-Vector3 Normalize(const Vector3& v) {
+Vector3 Vector3Calc::Normalize(const Vector3& v) {
 
 	Vector3 result;
 	float norm;
@@ -82,37 +81,37 @@ Vector3 Normalize(const Vector3& v) {
 }
 
 // 線形補間
-Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
+Vector3 Vector3Calc::Lerp(const Vector3& v1, const Vector3& v2, float t) {
 
 	Vector3 result = Add(v1, Multiply(t, Subtract(v2, v1)));
 
 	return result;
-
 }
 
 // 球面線形補間
-Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t) {
+Vector3 Vector3Calc::Slerp(const Vector3& v1, const Vector3& v2, float t) {
 
-	//v1,v2を正規化
+	// v1,v2を正規化
 	Vector3 start = Normalize(v1);
 	Vector3 end = Normalize(v2);
 
-	//2ベクトル間の角度(鋭角側)
+	// 2ベクトル間の角度(鋭角側)
 	float angle = std::acosf(Dot(start, end));
 
-	//補間係数
+	// 補間係数
 	float Ps = std::sinf(angle * (1 - t));
 	float Pe = std::sinf(angle * t);
-	
+
 	Vector3 result;
 
 	if (std::sinf(angle) == 0.0f) {
-		//線形補間へ
+		// 線形補間へ
 		result = Lerp(v1, v2, t);
 	} else {
-		result = Multiply(1.0f / std::sinf(angle), Add(Multiply(Ps, start), Multiply(Pe, end)));
+		result = Multiply(
+		    1.0f / std::sinf(angle),
+		    Add(Multiply(Ps, start), Multiply(Pe, end)));
 	}
 
 	return result;
-
 }

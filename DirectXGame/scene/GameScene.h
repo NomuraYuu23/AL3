@@ -15,6 +15,7 @@
 
 #include <memory>
 #include "Player.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -53,12 +54,9 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	//---テクスチャハンドル---//
-	uint32_t playerTextureHandle_ = 0;
 	uint32_t enemyTextureHandle_ = 0;
 
 	//---3Dモデル---//
-	std::unique_ptr<Model> model_ = nullptr;
-	Model* modelSkydome_ = nullptr;
 
 	//---ビュープロジェクション---//
 	ViewProjection viewProjection_;
@@ -72,8 +70,12 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 
-	//Player* player_ = nullptr;
+	//プレイヤー
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Model> modelPlayer_ = nullptr;
+
+	//スカイドーム
+	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<Model> modelSkydome_ = nullptr;
 
 };

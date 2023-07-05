@@ -11,7 +11,7 @@ void Player::Initialize(Model* model){
 	//nullポインタチェック
 	assert(model);
 
-	model_ = model;
+	model_.reset(model);
 
 	//ワールド変換データの初期化
 	worldTransform_.Initialize();

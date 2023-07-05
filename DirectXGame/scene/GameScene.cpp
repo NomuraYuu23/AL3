@@ -18,10 +18,6 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	//playerTextureHandle_ = TextureManager::Load("AL3_01.png");
-	
-	model_.reset(Model::Create());
-
 	viewProjection_.Initialize();
 
 	//自キャラ生成
@@ -30,6 +26,13 @@ void GameScene::Initialize() {
 	modelPlayer_.reset(Model::CreateFromOBJ("testPlayer", true));
 	//自キャラの初期化
 	player_->Initialize(modelPlayer_.get());
+
+	// スカイドーム生成
+	skydome_ = std::make_unique<Skydome>();
+	// スカイドームのモデル
+	modelSkydome_.reset(Model::CreateFromOBJ("skydome", true));
+	// スカイドームの初期化
+	skydome_->Initialize(modelSkydome_.get());
 
 }
 
@@ -65,7 +68,10 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
-	
+
+	//スカイドームの描画
+	skydome_->Draw(viewProjection_);
+
 	//自キャラの描画
 	player_->Draw(viewProjection_);
 

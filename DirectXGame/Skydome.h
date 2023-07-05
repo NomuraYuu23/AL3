@@ -2,20 +2,22 @@
 #include "Model.h"
 #include "WorldTransform.h"
 
-class Player {
+class Skydome {
 
 public:
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="model">モデル</param>
-	/// <param name="textureHandle">テクスチャハンドル</param>
 	void Initialize(Model* model);
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	void Update();
-	/// <summary>
+
+/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
@@ -23,9 +25,9 @@ public:
 
 private:
 
-	//ワールド変換データ
+	// ワールド変換データ
 	WorldTransform worldTransform_;
-	//モデル
+	// モデル
 	std::unique_ptr<Model> model_ = nullptr;
 
 };

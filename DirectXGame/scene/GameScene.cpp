@@ -18,7 +18,7 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	playerTextureHandle_ = TextureManager::Load("AL3_01.png");
+	//playerTextureHandle_ = TextureManager::Load("AL3_01.png");
 	
 	model_.reset(Model::Create());
 
@@ -26,8 +26,10 @@ void GameScene::Initialize() {
 
 	//自キャラ生成
 	player_ = std::make_unique<Player>();
+	//自キャラのモデル
+	modelPlayer_.reset(Model::CreateFromOBJ("testPlayer", true));
 	//自キャラの初期化
-	player_->Initialize(model_.get(), playerTextureHandle_);
+	player_->Initialize(modelPlayer_.get());
 
 }
 

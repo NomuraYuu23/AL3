@@ -74,5 +74,6 @@ private: // メンバ変数
 
 	//Player* player_ = nullptr;
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Model> modelPlayer_ = nullptr;
 
 };

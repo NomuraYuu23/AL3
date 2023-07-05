@@ -6,13 +6,12 @@
 /// </summary>
 /// <param name="model">モデル</param>
 /// <param name="textureHandle">テクスチャハンドル</param>
-void Player::Initialize(Model* model, uint32_t textureHandle){
+void Player::Initialize(Model* model){
 
 	//nullポインタチェック
 	assert(model);
 
 	model_ = model;
-	textureHandle_ = textureHandle;
 
 	//ワールド変換データの初期化
 	worldTransform_.Initialize();
@@ -36,6 +35,6 @@ void Player::Update() {
 /// <param name="viewProjection">ビュープロジェクション</param>
 void Player::Draw(ViewProjection viewProjection){
 
-	model_->Draw(worldTransform_, viewProjection,textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 
 }

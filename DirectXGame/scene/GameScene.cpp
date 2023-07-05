@@ -17,6 +17,9 @@ void GameScene::Initialize() {
 
 	viewProjection_.Initialize();
 
+	//デバッグカメラ
+	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
+
 	//自キャラ生成
 	player_ = std::make_unique<Player>();
 	//自キャラのモデル

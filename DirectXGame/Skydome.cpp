@@ -10,7 +10,7 @@ void Skydome::Initialize(Model* model) {
 	// nullポインタチェック
 	assert(model);
 
-	model_.reset(model);
+	model_ = model;
 
 	// ワールド変換データの初期化
 	worldTransform_.Initialize();

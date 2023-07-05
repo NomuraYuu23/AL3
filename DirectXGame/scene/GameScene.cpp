@@ -39,6 +39,13 @@ void GameScene::Initialize() {
 	// スカイドームの初期化
 	skydome_->Initialize(modelSkydome_.get());
 
+	// グラウンド生成
+	ground_ = std::make_unique<Ground>();
+	// グラウンドのモデル
+	modelGround_.reset(Model::CreateFromOBJ("ground", true));
+	// グラウンドの初期化
+	ground_->Initialize(modelGround_.get());
+
 }
 
 void GameScene::Update() {
@@ -104,6 +111,9 @@ void GameScene::Draw() {
 
 	//スカイドームの描画
 	skydome_->Draw(viewProjection_);
+
+	//グラウンドの描画
+	ground_->Draw(viewProjection_);
 
 	//自キャラの描画
 	player_->Draw(viewProjection_);

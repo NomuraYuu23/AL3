@@ -1,5 +1,9 @@
 #include "Player.h"
 #include <cassert>
+#include <input.h>
+#include <Xinput.h>
+
+#include"Vector3Calc.h"
 
 /// <summary>
 /// 初期化
@@ -23,8 +27,23 @@ void Player::Initialize(Model* model){
 /// </summary>
 void Player::Update() {
 
+	XINPUT_STATE joyState;
+	
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		//速さ
+		const float speed = 0.3f;
+
+		//移動量
+		Vector3 move = { float(joyState.Gamepad.sThumbLX), 0.0f, float(joyState.Gamepad.sThumbLY) };
+		//移動量に速さを反映
+		move = Vector3Calc::Multiply(speed, Vector3Calc::Normalize(move));
+
+		worldTransform_.translation_ = Vector3Calc::Add(worldTransform_.translation_, move);
+
+	}
+
 	//行列を定数バッファに転送
-	worldTransform_.TransferMatrix();
+	worldTransform_.UpdateMatrix();
 
 
 }

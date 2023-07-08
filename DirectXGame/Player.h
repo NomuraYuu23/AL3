@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include <memory>
 
 class Player {
 
@@ -20,6 +21,10 @@ public:
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection viewProjection);
+
+	WorldTransform GetWorldTransform() { return worldTransform_; }
+
+	WorldTransform* GetWorldTransformAddress() { return &worldTransform_; }
 
 private:
 

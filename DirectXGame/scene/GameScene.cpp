@@ -46,6 +46,14 @@ void GameScene::Initialize() {
 	// グラウンドの初期化
 	ground_->Initialize(modelGround_.get());
 
+	// 追従カメラ生成
+	followCamera_ = std::make_unique<FollowCamera>();
+	// 追従カメラの初期化
+	followCamera_->Initialize();
+	//自キャラのワールドトランスフォームを追従カメラにセット
+	followCamera_->SetTarget(player_->GetWorldTransformAddress());
+
+
 }
 
 void GameScene::Update() {
@@ -73,9 +81,15 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 
 	} else {
+		//追従カメラの更新
+		followCamera_->Update();
 
-		// ビュー行列の初期化
-		viewProjection_.Initialize();
+		// デバッグカメラのビュー行列をコピー
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		// デバッグカメラのプロジェクション行列
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+		// ビュー行列の転送
+		viewProjection_.TransferMatrix();
 	}
 
 	player_->Update();

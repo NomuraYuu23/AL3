@@ -1,6 +1,6 @@
 #include "Player.h"
 #include <cassert>
-#include <input.h>
+#include "input.h"
 #include <Xinput.h>
 
 #include"Vector3Calc.h"

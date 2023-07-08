@@ -14,6 +14,8 @@ public:
 
 	ViewProjection GetViewProjection() { return viewProjection_; }
 
+	ViewProjection* GetViewProjectionAddress() { return &viewProjection_; }
+
 private:
 
 	//ビュープロジェクション

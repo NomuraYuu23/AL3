@@ -26,11 +26,18 @@ public:
 
 	WorldTransform* GetWorldTransformAddress() { return &worldTransform_; }
 
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	}
+
 private:
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
 	//モデル
 	Model* model_ = nullptr;
+
+	//カメラのビュープロジェクション
+	const ViewProjection* viewProjection_ = nullptr;
 
 };

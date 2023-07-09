@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include <list>
 #include <sstream>
+#include <vector>
 
 #include <memory>
 #include "Player.h"
@@ -73,7 +74,13 @@ private: // メンバ変数
 
 	//プレイヤー
 	std::unique_ptr<Player> player_;
-	std::unique_ptr<Model> modelPlayer_ = nullptr;
+	std::vector<Model*> modelPlayer_;
+
+	//プレイヤー3Dモデル
+	std::unique_ptr<Model> modelFighterBody_;
+	std::unique_ptr<Model> modelFighterHead_;
+	std::unique_ptr<Model> modelFighterL_arm_;
+	std::unique_ptr<Model> modelFighterR_arm_;
 
 	//スカイドーム
 	std::unique_ptr<Skydome> skydome_;

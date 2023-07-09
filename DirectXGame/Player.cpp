@@ -12,12 +12,13 @@
 /// </summary>
 /// <param name="model">モデル</param>
 /// <param name="textureHandle">テクスチャハンドル</param>
-void Player::Initialize(Model* model){
+void Player::Initialize(std::vector<Model*> models) {
 
 	//nullポインタチェック
-	assert(model);
+	assert(models.front());
 
-	model_ = model;
+	//モデル読み込み
+	models_ = models;
 
 	//ワールド変換データの初期化
 	worldTransform_.Initialize();
@@ -73,6 +74,10 @@ void Player::Update() {
 /// <param name="viewProjection">ビュープロジェクション</param>
 void Player::Draw(ViewProjection viewProjection){
 
-	model_->Draw(worldTransform_, viewProjection);
+	//model_->Draw(worldTransform_, viewProjection);
+
+	for (Model* model : models_) {
+		model->Draw(worldTransform_, viewProjection);
+	}
 
 }

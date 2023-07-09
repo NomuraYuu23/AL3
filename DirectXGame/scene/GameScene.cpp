@@ -28,9 +28,22 @@ void GameScene::Initialize() {
 	//自キャラ生成
 	player_ = std::make_unique<Player>();
 	//自キャラのモデル
-	modelPlayer_.reset(Model::CreateFromOBJ("testPlayer", true));
+	//modelPlayer_.reset(Model::CreateFromOBJ("testPlayer", true));
+	// プレイヤー3Dモデル
+	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
+	modelPlayer_.push_back(modelFighterBody_.get());
+
+	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
+	modelPlayer_.push_back(modelFighterHead_.get());
+
+	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
+	modelPlayer_.push_back(modelFighterL_arm_.get());
+
+	modelFighterR_arm_.reset(Model::CreateFromOBJ("float_R_arm", true));
+	modelPlayer_.push_back(modelFighterR_arm_.get());
+
 	//自キャラの初期化
-	player_->Initialize(modelPlayer_.get());
+	player_->Initialize(modelPlayer_);
 
 	// スカイドーム生成
 	skydome_ = std::make_unique<Skydome>();

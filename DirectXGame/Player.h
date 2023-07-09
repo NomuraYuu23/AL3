@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include <memory>
+#include <vector>
 
 class Player {
 
@@ -11,7 +12,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model);
+	void Initialize(std::vector<Model*> models);
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -35,7 +36,7 @@ private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
 	//モデル
-	Model* model_ = nullptr;
+	std::vector<Model*> models_;
 
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;

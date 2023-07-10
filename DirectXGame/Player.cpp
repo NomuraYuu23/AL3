@@ -23,6 +23,11 @@ void Player::Initialize(std::vector<Model*> models) {
 	//ワールド変換データの初期化
 	worldTransform_.Initialize();
 
+	worldTransformBody_.Initialize();
+	worldTransformHead_.Initialize();
+	worldTransformL_arm_.Initialize();
+	worldTransformR_arm_.Initialize();
+
 }
 
 /// <summary>
@@ -64,6 +69,12 @@ void Player::Update() {
 
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
+
+	worldTransformBody_ = worldTransform_;
+	worldTransformHead_ = worldTransform_;
+	//worldTransformHead_.translation_.x;
+	worldTransformL_arm_ = worldTransform_;
+	worldTransformR_arm_ = worldTransform_;
 
 
 }

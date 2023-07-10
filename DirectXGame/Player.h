@@ -35,6 +35,12 @@ private:
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
+
+	WorldTransform worldTransformBody_;
+	WorldTransform worldTransformHead_;
+	WorldTransform worldTransformL_arm_;
+	WorldTransform worldTransformR_arm_;
+
 	//モデル
 	std::vector<Model*> models_;
 

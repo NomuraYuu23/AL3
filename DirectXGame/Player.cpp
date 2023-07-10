@@ -3,6 +3,9 @@
 #include "input.h"
 #include <Xinput.h>
 #include <cmath>
+#include <numbers>
+#include "ImGuiManager.h"
+
 
 #include "Vector3Calc.h"
 #include "Matrix4x4Calc.h"
@@ -27,15 +30,18 @@ void Player::Initialize(std::vector<Model*> models) {
 	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.Initialize();
 	worldTransformHead_.translation_.y += 3.5f;
-	worldTransformHead_.parent_ = &worldTransform_;
+	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformL_arm_.Initialize();
 	worldTransformL_arm_.translation_.y += 2.5f;
 	worldTransformL_arm_.translation_.x -= 1.0f;
-	worldTransformL_arm_.parent_ = &worldTransform_;
+	worldTransformL_arm_.parent_ = &worldTransformBody_;
 	worldTransformR_arm_.Initialize();
 	worldTransformR_arm_.translation_.y += 2.5f;
 	worldTransformR_arm_.translation_.x += 1.0f;
-	worldTransformR_arm_.parent_ = &worldTransform_;
+	worldTransformR_arm_.parent_ = &worldTransformBody_;
+
+	//浮遊ギミック
+	InitializeFloatinggimmick();
 	
 }
 
@@ -76,6 +82,9 @@ void Player::Update() {
 
 	}
 
+	// 浮遊ギミック
+	UpdateFloatinggimmick();
+
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
 	worldTransformBody_.UpdateMatrix();
@@ -100,5 +109,41 @@ void Player::Draw(ViewProjection viewProjection){
 	models_.at(1)->Draw(worldTransformHead_, viewProjection);
 	models_.at(2)->Draw(worldTransformL_arm_, viewProjection);
 	models_.at(3)->Draw(worldTransformR_arm_, viewProjection);
+
+}
+
+/// <summary>
+/// 浮遊ギミック初期化
+/// </summary>
+void Player::InitializeFloatinggimmick() {
+
+	floatingParameter_ = 0.0f;
+
+}
+
+/// <summary>
+/// 浮遊ギミック初期化
+/// </summary>
+void Player::UpdateFloatinggimmick() {
+	
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("Head Translation", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderInt("floatingPeriod", reinterpret_cast<int*>(&floatingPeriod), 1, 120);
+	ImGui::SliderFloat("floatingAmplitude", &floatingAmplitude, 0.0f, 10.0f);
+	ImGui::End();
+
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * float(std::numbers::pi) / floatingPeriod;
+
+	// パラメータを1ステップ分加算
+	floatingParameter_ += step;
+	//2πを超えたら0に戻す
+	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * float(std::numbers::pi));
+
+
+	//浮遊を座標に反映
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude + 1.0f;
 
 }

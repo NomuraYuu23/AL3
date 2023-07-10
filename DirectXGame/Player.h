@@ -23,6 +23,16 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection viewProjection);
 
+	/// <summary>
+	/// 浮遊ギミック初期化
+	/// </summary>
+	void InitializeFloatinggimmick();
+
+	/// <summary>
+	/// 浮遊ギミック更新
+	/// </summary>
+	void UpdateFloatinggimmick();
+
 	WorldTransform GetWorldTransform() { return worldTransform_; }
 
 	WorldTransform* GetWorldTransformAddress() { return &worldTransform_; }
@@ -46,5 +56,12 @@ private:
 
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
+
+	//浮遊ギミックの媒介変数
+	float floatingParameter_ = 0.0f;
+	// 浮遊移動のサイクル<frame>
+	uint16_t floatingPeriod = 1;
+	// 浮遊の振幅<m>
+	float floatingAmplitude = 0.0f;
 
 };

@@ -42,6 +42,9 @@ void Player::Initialize(std::vector<Model*> models) {
 
 	//浮遊ギミック
 	InitializeFloatinggimmick();
+
+	//ぶらぶらギミック
+	InitializeSwinggimmick();
 	
 }
 
@@ -84,6 +87,9 @@ void Player::Update() {
 
 	// 浮遊ギミック
 	UpdateFloatinggimmick();
+	
+	//ぶらぶらギミック
+	UpdateSwinggimmick();
 
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
@@ -117,7 +123,12 @@ void Player::Draw(ViewProjection viewProjection){
 /// </summary>
 void Player::InitializeFloatinggimmick() {
 
+	// 浮遊ギミックの媒介変数
 	floatingParameter_ = 0.0f;
+	// 浮遊移動のサイクル<frame>
+	floatingPeriod = 1;
+	// 浮遊の振幅<m>
+	floatingAmplitude = 0.0f;
 
 }
 
@@ -145,5 +156,38 @@ void Player::UpdateFloatinggimmick() {
 
 	//浮遊を座標に反映
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude + 1.0f;
+
+}
+
+/// <summary>
+/// 浮遊ギミック初期化
+/// </summary>
+void Player::InitializeSwinggimmick() {
+
+	// ぶらぶらアニメーションの媒介変数
+	swingParameter_ = 0.0f;
+	// ぶらぶらアニメーションのサイクル<frame>
+	swingPeriod = 1;
+
+}
+
+/// <summary>
+/// 浮遊ギミック更新
+/// </summary>
+void Player::UpdateSwinggimmick() {
+
+	ImGui::Begin("Player");
+	ImGui::SliderInt("swingPeriod", reinterpret_cast<int*>(&swingPeriod), 1, 120);
+	ImGui::End();
+
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * float(std::numbers::pi) / swingPeriod;
+	// パラメータを1ステップ分加算
+	swingParameter_ += step;
+	// 2πを超えたら0に戻す
+	swingParameter_ = std::fmod(swingParameter_, 2.0f * float(std::numbers::pi));
+
+	worldTransformL_arm_.rotation_.x = swingParameter_;
+	worldTransformR_arm_.rotation_.x = swingParameter_;
 
 }

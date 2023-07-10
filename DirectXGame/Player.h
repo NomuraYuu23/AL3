@@ -33,6 +33,16 @@ public:
 	/// </summary>
 	void UpdateFloatinggimmick();
 
+	/// <summary>
+	/// ぶらぶらギミック初期化
+	/// </summary>
+	void InitializeSwinggimmick();
+
+	/// <summary>
+	/// ぶらぶらギミック更新
+	/// </summary>
+	void UpdateSwinggimmick();
+
 	WorldTransform GetWorldTransform() { return worldTransform_; }
 
 	WorldTransform* GetWorldTransformAddress() { return &worldTransform_; }
@@ -63,5 +73,10 @@ private:
 	uint16_t floatingPeriod = 1;
 	// 浮遊の振幅<m>
 	float floatingAmplitude = 0.0f;
+
+	//ぶらぶらギミックの媒介変数
+	float swingParameter_ = 0.0f;
+	//ぶらぶらギミックのサイクル<frame>
+	uint16_t swingPeriod = 1;
 
 };

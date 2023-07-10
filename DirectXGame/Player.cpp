@@ -24,10 +24,19 @@ void Player::Initialize(std::vector<Model*> models) {
 	worldTransform_.Initialize();
 
 	worldTransformBody_.Initialize();
+	worldTransformBody_.parent_ = &worldTransform_;
 	worldTransformHead_.Initialize();
+	worldTransformHead_.translation_.y += 3.5f;
+	worldTransformHead_.parent_ = &worldTransform_;
 	worldTransformL_arm_.Initialize();
+	worldTransformL_arm_.translation_.y += 2.5f;
+	worldTransformL_arm_.translation_.x -= 1.0f;
+	worldTransformL_arm_.parent_ = &worldTransform_;
 	worldTransformR_arm_.Initialize();
-
+	worldTransformR_arm_.translation_.y += 2.5f;
+	worldTransformR_arm_.translation_.x += 1.0f;
+	worldTransformR_arm_.parent_ = &worldTransform_;
+	
 }
 
 /// <summary>
@@ -69,13 +78,10 @@ void Player::Update() {
 
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
-
-	worldTransformBody_ = worldTransform_;
-	worldTransformHead_ = worldTransform_;
-	//worldTransformHead_.translation_.x;
-	worldTransformL_arm_ = worldTransform_;
-	worldTransformR_arm_ = worldTransform_;
-
+	worldTransformBody_.UpdateMatrix();
+	worldTransformHead_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
 
 }
 
@@ -87,8 +93,12 @@ void Player::Draw(ViewProjection viewProjection){
 
 	//model_->Draw(worldTransform_, viewProjection);
 
-	for (Model* model : models_) {
-		model->Draw(worldTransform_, viewProjection);
-	}
+	//for (Model* model : models_) {
+	//	model->Draw(worldTransform_, viewProjection);
+	//}
+	models_.at(0)->Draw(worldTransformBody_, viewProjection);
+	models_.at(1)->Draw(worldTransformHead_, viewProjection);
+	models_.at(2)->Draw(worldTransformL_arm_, viewProjection);
+	models_.at(3)->Draw(worldTransformR_arm_, viewProjection);
 
 }

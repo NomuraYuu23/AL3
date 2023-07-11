@@ -168,7 +168,6 @@ void Player::InitializeSwinggimmick() {
 	swingParameter_ = 0.0f;
 	// ぶらぶらアニメーションのサイクル<frame>
 	swingPeriod = 1;
-
 }
 
 /// <summary>
@@ -187,7 +186,7 @@ void Player::UpdateSwinggimmick() {
 	// 2πを超えたら0に戻す
 	swingParameter_ = std::fmod(swingParameter_, 2.0f * float(std::numbers::pi));
 
-	worldTransformL_arm_.rotation_.x = swingParameter_;
-	worldTransformR_arm_.rotation_.x = swingParameter_;
+	worldTransformL_arm_.rotation_.x = std::sinf(swingParameter_) / 2.0f;
+	worldTransformR_arm_.rotation_.x = std::sinf(swingParameter_) / 2.0f;
 
 }

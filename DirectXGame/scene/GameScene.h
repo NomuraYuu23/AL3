@@ -74,7 +74,6 @@ private: // メンバ変数
 
 	//プレイヤー
 	std::unique_ptr<Player> player_;
-	std::vector<Model*> modelPlayer_;
 
 	//プレイヤー3Dモデル
 	std::unique_ptr<Model> modelFighterBody_;

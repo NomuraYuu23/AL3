@@ -4,7 +4,9 @@
 #include <memory>
 #include <vector>
 
-class Player {
+#include "BaseCharacter.h"
+
+class Player : public BaseCharacter {
 
 public:
 	/// <summary>
@@ -12,16 +14,16 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(std::vector<Model*> models);
+	void Initialize(const std::vector<Model*>& models) override;
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update() override;
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
-	void Draw(ViewProjection viewProjection);
+	void Draw(const ViewProjection& viewProjection) override;
 
 	/// <summary>
 	/// 浮遊ギミック初期化
@@ -54,7 +56,6 @@ public:
 private:
 
 	//ワールド変換データ
-	WorldTransform worldTransform_;
 
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformHead_;
@@ -62,7 +63,6 @@ private:
 	WorldTransform worldTransformR_arm_;
 
 	//モデル
-	std::vector<Model*> models_;
 
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;

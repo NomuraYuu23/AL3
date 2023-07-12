@@ -10,21 +10,25 @@
 #include "Vector3Calc.h"
 #include "Matrix4x4Calc.h"
 
+enum playerModelIndex {
+	kModelIndexBody,
+	kModelIndexHead,
+	kModelIndexL_arm,
+	kModelIndexR_arm
+};
+
 /// <summary>
 /// 初期化
 /// </summary>
 /// <param name="model">モデル</param>
 /// <param name="textureHandle">テクスチャハンドル</param>
-void Player::Initialize(std::vector<Model*> models) {
+void Player::Initialize(const std::vector<Model*>& models) {
 
 	//nullポインタチェック
 	assert(models.front());
 
-	//モデル読み込み
-	models_ = models;
-
-	//ワールド変換データの初期化
-	worldTransform_.Initialize();
+	//基底クラスの初期化
+	BaseCharacter::Initialize(models);
 
 	worldTransformBody_.Initialize();
 	worldTransformBody_.parent_ = &worldTransform_;
@@ -104,17 +108,17 @@ void Player::Update() {
 /// 描画
 /// </summary>
 /// <param name="viewProjection">ビュープロジェクション</param>
-void Player::Draw(ViewProjection viewProjection){
+void Player::Draw(const ViewProjection& viewProjection) {
 
 	//model_->Draw(worldTransform_, viewProjection);
 
 	//for (Model* model : models_) {
 	//	model->Draw(worldTransform_, viewProjection);
 	//}
-	models_.at(0)->Draw(worldTransformBody_, viewProjection);
-	models_.at(1)->Draw(worldTransformHead_, viewProjection);
-	models_.at(2)->Draw(worldTransformL_arm_, viewProjection);
-	models_.at(3)->Draw(worldTransformR_arm_, viewProjection);
+	models_[kModelIndexBody]->Draw(worldTransformBody_, viewProjection);
+	models_[kModelIndexHead]->Draw(worldTransformHead_, viewProjection);
+	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, viewProjection);
+	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, viewProjection);
 
 }
 

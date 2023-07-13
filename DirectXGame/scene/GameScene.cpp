@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 
 	//自キャラ生成
 	player_ = std::make_unique<Player>();
-	// 自キャラの3Dモデル
+	// 自キャラのモデル
 	modelFighterBody_.reset(Model::CreateFromOBJ("float_Body", true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("float_Head", true));
 	modelFighterL_arm_.reset(Model::CreateFromOBJ("float_L_arm", true));
@@ -39,8 +39,6 @@ void GameScene::Initialize() {
 		modelFighterL_arm_.get(),
 	    modelFighterR_arm_.get()
 	};
-
-
 	//自キャラの初期化
 	player_->Initialize(playerModels);
 
@@ -67,6 +65,17 @@ void GameScene::Initialize() {
 
 	//追従カメラのビュープロジェクションを自キャラにセット
 	player_->SetViewProjection(followCamera_->GetViewProjectionAddress());
+
+	//エネミーの生成
+	enemy_ = std::make_unique<Enemy>();
+	//エネミーのモデル
+	modelEnemyBody_.reset(Model::CreateFromOBJ("enemy_Body",true));
+
+	std::vector<Model*> enemyModels = {
+		modelEnemyBody_.get()
+	};
+	//エネミーの初期化
+	enemy_->Initialize(enemyModels);
 
 
 }
@@ -109,6 +118,8 @@ void GameScene::Update() {
 
 	player_->Update();
 
+	enemy_->Update();
+
 }
 
 void GameScene::Draw() {
@@ -146,6 +157,9 @@ void GameScene::Draw() {
 
 	//自キャラの描画
 	player_->Draw(viewProjection_);
+
+	//エネミーの描画
+	enemy_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

@@ -19,6 +19,8 @@
 #include "Ground.h"
 #include "FollowCamera.h"
 
+#include "Enemy.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -76,10 +78,10 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 
 	//プレイヤー3Dモデル
-	std::unique_ptr<Model> modelFighterBody_;
-	std::unique_ptr<Model> modelFighterHead_;
-	std::unique_ptr<Model> modelFighterL_arm_;
-	std::unique_ptr<Model> modelFighterR_arm_;
+	std::unique_ptr<Model> modelFighterBody_ = nullptr;
+	std::unique_ptr<Model> modelFighterHead_ = nullptr;
+	std::unique_ptr<Model> modelFighterL_arm_ = nullptr;
+	std::unique_ptr<Model> modelFighterR_arm_ = nullptr;
 
 	//スカイドーム
 	std::unique_ptr<Skydome> skydome_;
@@ -91,5 +93,10 @@ private: // メンバ変数
 
 	//追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
+
+	//エネミー
+	std::unique_ptr<Enemy> enemy_;
+
+	std::unique_ptr<Model> modelEnemyBody_ = nullptr;
 
 };

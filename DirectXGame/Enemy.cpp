@@ -24,6 +24,19 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	// 基底クラスの初期化
 	BaseCharacter::Initialize(models);
 
+	worldTransformBody_.Initialize();
+	worldTransformBody_.parent_ = &worldTransform_;
+	worldTransformL_arm_.Initialize();
+	worldTransformL_arm_.translation_.x -= 2.0f;
+	worldTransformL_arm_.translation_.y += 1.0f;
+	worldTransformL_arm_.rotation_.x += float(std::numbers::pi) / 2.0f;
+	worldTransformL_arm_.parent_ = &worldTransformBody_;
+	worldTransformR_arm_.Initialize();
+	worldTransformR_arm_.translation_.x += 2.0f;
+	worldTransformR_arm_.translation_.y += 1.0f;
+	worldTransformR_arm_.rotation_.x += float(std::numbers::pi) / 2.0f;
+	worldTransformR_arm_.parent_ = &worldTransformBody_;
+
 }
 
 /// <summary>
@@ -31,7 +44,20 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 /// </summary>
 void Enemy::Update() {
 
+	ImGui::Begin("Enemy");
+	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmL Rotation", &worldTransformL_arm_.rotation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("ArmR Rotation", &worldTransformR_arm_.rotation_.x, -10.0f, 10.0f);
+	ImGui::End();
+
 	worldTransform_.UpdateMatrix();
+
+	worldTransformBody_.UpdateMatrix();
+	worldTransformL_arm_.UpdateMatrix();
+	worldTransformR_arm_.UpdateMatrix();
+
+
 
 }
 
@@ -41,8 +67,8 @@ void Enemy::Update() {
 /// <param name="viewProjection">ビュープロジェクション</param>
 void Enemy::Draw(const ViewProjection& viewProjection) {
 
-	 for (Model* model : models_) {
-		model->Draw(worldTransform_, viewProjection);
-	 }
+	 models_[0]->Draw(worldTransformBody_, viewProjection);
+	 models_[1]->Draw(worldTransformL_arm_, viewProjection);
+	 models_[2]->Draw(worldTransformR_arm_, viewProjection);
 
 }

@@ -69,10 +69,14 @@ void GameScene::Initialize() {
 	//エネミーの生成
 	enemy_ = std::make_unique<Enemy>();
 	//エネミーのモデル
-	modelEnemyBody_.reset(Model::CreateFromOBJ("enemy_Body",true));
+	modelEnemyBody_.reset(Model::CreateFromOBJ("enemy_Body", true));
+	modelEnemyL_arm_.reset(Model::CreateFromOBJ("enemy_Arm", true));
+	modelEnemyR_arm_.reset(Model::CreateFromOBJ("enemy_Arm", true));
 
 	std::vector<Model*> enemyModels = {
-		modelEnemyBody_.get()
+	    modelEnemyBody_.get(),
+		modelEnemyL_arm_.get(),
+		modelEnemyR_arm_.get()
 	};
 	//エネミーの初期化
 	enemy_->Initialize(enemyModels);

@@ -8,7 +8,7 @@
 
 class Enemy : public BaseCharacter {
 
-	public:
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -24,5 +24,12 @@ class Enemy : public BaseCharacter {
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection) override;
+
+private:
+
+	WorldTransform worldTransformBody_;
+	WorldTransform worldTransformL_arm_;
+	WorldTransform worldTransformR_arm_;
+
 
 };

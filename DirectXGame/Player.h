@@ -70,13 +70,13 @@ private:
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 	// 浮遊移動のサイクル<frame>
-	uint16_t floatingPeriod = 1;
+	uint16_t floatingPeriod_ = 1;
 	// 浮遊の振幅<m>
-	float floatingAmplitude = 0.0f;
+	float floatingAmplitude_ = 0.0f;
 
 	//ぶらぶらギミックの媒介変数
 	float swingParameter_ = 0.0f;
 	//ぶらぶらギミックのサイクル<frame>
-	uint16_t swingPeriod = 1;
+	uint16_t swingPeriod_ = 1;
 
 };

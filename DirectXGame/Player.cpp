@@ -130,9 +130,9 @@ void Player::InitializeFloatinggimmick() {
 	// 浮遊ギミックの媒介変数
 	floatingParameter_ = 0.0f;
 	// 浮遊移動のサイクル<frame>
-	floatingPeriod = 1;
+	floatingPeriod_ = 1;
 	// 浮遊の振幅<m>
-	floatingAmplitude = 0.0f;
+	floatingAmplitude_ = 0.0f;
 
 }
 
@@ -145,12 +145,12 @@ void Player::UpdateFloatinggimmick() {
 	ImGui::SliderFloat3("Head Translation", &worldTransformHead_.translation_.x, -10.0f, 10.0f);
 	ImGui::SliderFloat3("ArmL Translation", &worldTransformL_arm_.translation_.x, -10.0f, 10.0f);
 	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
-	ImGui::SliderInt("floatingPeriod", reinterpret_cast<int*>(&floatingPeriod), 1, 120);
-	ImGui::SliderFloat("floatingAmplitude", &floatingAmplitude, 0.0f, 10.0f);
+	ImGui::SliderInt("floatingPeriod", reinterpret_cast<int*>(&floatingPeriod_), 1, 120);
+	ImGui::SliderFloat("floatingAmplitude", &floatingAmplitude_, 0.0f, 10.0f);
 	ImGui::End();
 
 	// 1フレームでのパラメータ加算値
-	const float step = 2.0f * float(std::numbers::pi) / floatingPeriod;
+	const float step = 2.0f * float(std::numbers::pi) / floatingPeriod_;
 
 	// パラメータを1ステップ分加算
 	floatingParameter_ += step;
@@ -159,7 +159,7 @@ void Player::UpdateFloatinggimmick() {
 
 
 	//浮遊を座標に反映
-	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude + 1.0f;
+	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude_ + 1.0f;
 
 }
 
@@ -171,7 +171,7 @@ void Player::InitializeSwinggimmick() {
 	// ぶらぶらアニメーションの媒介変数
 	swingParameter_ = 0.0f;
 	// ぶらぶらアニメーションのサイクル<frame>
-	swingPeriod = 1;
+	swingPeriod_ = 1;
 }
 
 /// <summary>
@@ -180,11 +180,11 @@ void Player::InitializeSwinggimmick() {
 void Player::UpdateSwinggimmick() {
 
 	ImGui::Begin("Player");
-	ImGui::SliderInt("swingPeriod", reinterpret_cast<int*>(&swingPeriod), 1, 120);
+	ImGui::SliderInt("swingPeriod", reinterpret_cast<int*>(&swingPeriod_), 1, 120);
 	ImGui::End();
 
 	// 1フレームでのパラメータ加算値
-	const float step = 2.0f * float(std::numbers::pi) / swingPeriod;
+	const float step = 2.0f * float(std::numbers::pi) / swingPeriod_;
 	// パラメータを1ステップ分加算
 	swingParameter_ += step;
 	// 2πを超えたら0に戻す

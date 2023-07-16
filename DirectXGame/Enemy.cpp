@@ -37,18 +37,25 @@ void Enemy::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.rotation_.x += float(std::numbers::pi) / 2.0f;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+	// 移動用
+	// 速度
+	Velocity_ = {0.0f, 0.0f, 0.0f};
+	// 速さ
+	kMoveSpeed = 0.0f;
+
+	// 回転用
+	// 回転速度
+	kRotateSpeed = 0.0f;
+
+	// 腕回転ギミック初期化
+	InitializeArmRotationgimmick();
+
 }
 
 /// <summary>
 /// 更新
 /// </summary>
 void Enemy::Update() {
-
-	//回転
-	Rotation();
-
-	//移動
-	Move();
 
 	//ImGui
 	ImGui::Begin("Enemy");
@@ -57,6 +64,15 @@ void Enemy::Update() {
 	ImGui::SliderFloat3("ArmL Rotation", &worldTransformL_arm_.rotation_.x, -10.0f, 10.0f);
 	ImGui::SliderFloat3("ArmR Rotation", &worldTransformR_arm_.rotation_.x, -10.0f, 10.0f);
 	ImGui::End();
+
+	// 回転
+	Rotation();
+
+	// 移動
+	Move();
+
+	// 腕回転ギミック
+	UpdateArmRotationgimmick();
 
 	//ワールド変換データ更新
 	worldTransform_.UpdateMatrix();
@@ -86,8 +102,12 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 /// </summary>
 void Enemy::Move() {
 
+	// ImGui
+	 ImGui::Begin("Enemy");
+	 ImGui::SliderFloat("kMoveSpeed", &kMoveSpeed, 0.0f, 1.0f);
+	 ImGui::End();
+
 	//移動速度
-	const float kMoveSpeed = 0.3f;
 	Vector3 velocity(0.0f,0.0f,kMoveSpeed);
 
 	//速度ベクトルを向きに合わせて回転させる
@@ -105,12 +125,47 @@ void Enemy::Move() {
 /// </summary>
 void Enemy::Rotation() {
 
-	//回転速度
-	const float kRotateSpeed = 0.02f;
+	// ImGui
+	ImGui::Begin("Enemy");
+	ImGui::SliderFloat("kRotateSpeed", &kRotateSpeed, 0.0f, 0.1f);
+	ImGui::End();
 
 	worldTransform_.rotation_.y += kRotateSpeed;
 	if (worldTransform_.rotation_.y >= 2.0f * float(std::numbers::pi)) {
 		worldTransform_.rotation_.y -= 2.0f * float(std::numbers::pi);
 	}
+
+}
+
+/// <summary>
+/// 腕回転ギミック初期化
+/// </summary>
+void Enemy::InitializeArmRotationgimmick() {
+
+	// 腕回転ギミックの媒介変数
+	armRotationParameter_ = 0.0f;
+	// 腕回転ギミックのサイクル<frame>
+	armRotationPeriod_ = 1;
+
+}
+
+/// <summary>
+/// 腕回転ギミック
+/// </summary>
+void Enemy::UpdateArmRotationgimmick() {
+
+	// ImGui
+	ImGui::Begin("Enemy");
+	ImGui::SliderInt("armRotationPeriod", reinterpret_cast<int*>(&armRotationPeriod_), 1, 120);
+	ImGui::End();
+
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * float(std::numbers::pi) / armRotationPeriod_;
+
+	armRotationParameter_ += step;
+	armRotationParameter_ = std::fmod(armRotationParameter_, 2.0f * float(std::numbers::pi));
+
+	worldTransformL_arm_.rotation_.x = armRotationParameter_;
+	worldTransformR_arm_.rotation_.x = armRotationParameter_;
 
 }

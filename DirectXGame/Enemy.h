@@ -25,11 +25,26 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection) override;
 
+	/// <summary>
+	/// 移動
+	/// </summary>
+	void Move();
+
+	/// <summary>
+	/// 回転
+	/// </summary>
+	void Rotation();
+
 private:
 
+	//ワールド変換データ
 	WorldTransform worldTransformBody_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+
+	//Move用
+	//速度
+	Vector3 Velocity_;
 
 
 };

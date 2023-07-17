@@ -82,6 +82,7 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterHead_ = nullptr;
 	std::unique_ptr<Model> modelFighterL_arm_ = nullptr;
 	std::unique_ptr<Model> modelFighterR_arm_ = nullptr;
+	std::unique_ptr<Model> modelFighterWeapon_ = nullptr;
 
 	//スカイドーム
 	std::unique_ptr<Skydome> skydome_;

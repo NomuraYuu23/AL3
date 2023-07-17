@@ -26,6 +26,16 @@ public:
 	void Draw(const ViewProjection& viewProjection) override;
 
 	/// <summary>
+	/// 通常行動更新
+	/// </summary>
+	void BehaviorRootUpdate();
+
+	/// <summary>
+	/// 攻撃行動更新
+	/// </summary>
+	void BehaviorAttackUpdate();
+
+	/// <summary>
 	/// 浮遊ギミック初期化
 	/// </summary>
 	void InitializeFloatinggimmick();
@@ -61,6 +71,7 @@ private:
 	WorldTransform worldTransformHead_;
 	WorldTransform worldTransformL_arm_;
 	WorldTransform worldTransformR_arm_;
+	WorldTransform worldTransformWeapon_;
 
 	//モデル
 
@@ -78,5 +89,10 @@ private:
 	float swingParameter_ = 0.0f;
 	//ぶらぶらギミックのサイクル<frame>
 	uint16_t swingPeriod_ = 1;
+
+	//攻撃行動用の媒介変数
+	float behaviorAttackParameter_ = 0.0f;
+	// 攻撃行動用のサイクル<frame>
+	uint16_t behaviorAttackPeriod_ = 1;
 
 };

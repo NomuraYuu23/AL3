@@ -14,7 +14,8 @@ enum playerModelIndex {
 	kModelIndexBody,
 	kModelIndexHead,
 	kModelIndexL_arm,
-	kModelIndexR_arm
+	kModelIndexR_arm,
+	kModelIndexWeapon
 };
 
 /// <summary>
@@ -44,6 +45,10 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	worldTransformR_arm_.translation_.x += 1.0f;
 	worldTransformR_arm_.parent_ = &worldTransformBody_;
 
+	worldTransformWeapon_.Initialize();
+	worldTransformWeapon_.translation_.y += 3.0f;
+	worldTransformWeapon_.parent_ = &worldTransform_;
+
 	//浮遊ギミック
 	InitializeFloatinggimmick();
 
@@ -57,43 +62,9 @@ void Player::Initialize(const std::vector<Model*>& models) {
 /// </summary>
 void Player::Update() {
 
-	XINPUT_STATE joyState;
-	
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		//速さ
-		const float speed = 0.3f;
-
-		//移動量
-		Vector3 move = { float(joyState.Gamepad.sThumbLX), 0.0f, float(joyState.Gamepad.sThumbLY) };
-		//移動量に速さを反映
-		move = Vector3Calc::Multiply(speed, Vector3Calc::Normalize(move));
-
-		// カメラの角度から回転行列を計算する
-		Matrix4x4 rotateMatrixX = Matrix4x4Calc::MakeRotateXMatrix(viewProjection_->rotation_.x);
-		Matrix4x4 rotateMatrixY = Matrix4x4Calc::MakeRotateYMatrix(viewProjection_->rotation_.y);
-		Matrix4x4 rotateMatrixZ = Matrix4x4Calc::MakeRotateZMatrix(viewProjection_->rotation_.z);
-
-		Matrix4x4 rotateMatrix = Matrix4x4Calc::Multiply(
-		    rotateMatrixX, Matrix4x4Calc::Multiply(rotateMatrixY, rotateMatrixZ));
-
-		//移動ベクトルをカメラの角度だけ回転する
-		move = Matrix4x4Calc::TransformNormal(move, rotateMatrix);
-
-		//移動
-		worldTransform_.translation_ = Vector3Calc::Add(worldTransform_.translation_, move);
-
-		//移動方向に見た目を合わせる(Y軸)
-		if (std::fabsf(move.x) > 0.1 || std::fabsf(move.z) > 0.1) {
-			worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
-		}
-
-	}
-
-	// 浮遊ギミック
-	UpdateFloatinggimmick();
-	
-	//ぶらぶらギミック
-	UpdateSwinggimmick();
+	// 通常行動更新
+	//BehaviorRootUpdate();
+	BehaviorAttackUpdate();
 
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
@@ -101,6 +72,7 @@ void Player::Update() {
 	worldTransformHead_.UpdateMatrix();
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
+	worldTransformWeapon_.UpdateMatrix();
 
 }
 
@@ -119,6 +91,105 @@ void Player::Draw(const ViewProjection& viewProjection) {
 	models_[kModelIndexHead]->Draw(worldTransformHead_, viewProjection);
 	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, viewProjection);
 	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, viewProjection);
+	models_[kModelIndexWeapon]->Draw(worldTransformWeapon_, viewProjection);
+
+}
+
+/// <summary>
+/// 通常行動更新
+/// </summary>
+void Player::BehaviorRootUpdate() {
+
+		XINPUT_STATE joyState;
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		// 速さ
+		const float speed = 0.3f;
+
+		// 移動量
+		Vector3 move = {float(joyState.Gamepad.sThumbLX), 0.0f, float(joyState.Gamepad.sThumbLY)};
+		// 移動量に速さを反映
+		move = Vector3Calc::Multiply(speed, Vector3Calc::Normalize(move));
+
+		// カメラの角度から回転行列を計算する
+		Matrix4x4 rotateMatrixX = Matrix4x4Calc::MakeRotateXMatrix(viewProjection_->rotation_.x);
+		Matrix4x4 rotateMatrixY = Matrix4x4Calc::MakeRotateYMatrix(viewProjection_->rotation_.y);
+		Matrix4x4 rotateMatrixZ = Matrix4x4Calc::MakeRotateZMatrix(viewProjection_->rotation_.z);
+
+		Matrix4x4 rotateMatrix = Matrix4x4Calc::Multiply(
+		    rotateMatrixX, Matrix4x4Calc::Multiply(rotateMatrixY, rotateMatrixZ));
+
+		// 移動ベクトルをカメラの角度だけ回転する
+		move = Matrix4x4Calc::TransformNormal(move, rotateMatrix);
+
+		// 移動
+		worldTransform_.translation_ = Vector3Calc::Add(worldTransform_.translation_, move);
+
+		// 移動方向に見た目を合わせる(Y軸)
+		if (std::fabsf(move.x) > 0.1 || std::fabsf(move.z) > 0.1) {
+			worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
+		}
+	}
+
+	// 浮遊ギミック
+	UpdateFloatinggimmick();
+
+	// ぶらぶらギミック
+	UpdateSwinggimmick();
+
+}
+
+/// <summary>
+/// 攻撃行動更新
+/// </summary>
+void Player::BehaviorAttackUpdate() {
+
+	ImGui::Begin("Player");
+	ImGui::SliderInt("behaviorAttackPeriod_", reinterpret_cast<int*>(&behaviorAttackPeriod_), 1, 120);
+	ImGui::End();
+
+	// 1フレームでのパラメータ加算値
+	const float step = 2.0f * float(std::numbers::pi) / behaviorAttackPeriod_;
+
+	// パラメータを1ステップ分加算
+	behaviorAttackParameter_ += step;
+	// 2πを超えたら0に戻す
+	behaviorAttackParameter_ = std::fmod(behaviorAttackParameter_, 2.0f * float(std::numbers::pi));
+	if (behaviorAttackParameter_ >= 0.8f * float(std::numbers::pi) &&
+	    behaviorAttackParameter_ <= 1.5f * float(std::numbers::pi)) {
+	
+		worldTransformL_arm_.rotation_.x = behaviorAttackParameter_;
+		worldTransformR_arm_.rotation_.x = behaviorAttackParameter_;
+		worldTransformWeapon_.rotation_.x = behaviorAttackParameter_ + float(std::numbers::pi);
+
+		// 速さ
+		const float speed = 0.3f;
+
+		// 移動量
+		Vector3 move = {0.0f, 0.0f, 1.0f};
+		// 移動量に速さを反映
+		move = Vector3Calc::Multiply(speed, Vector3Calc::Normalize(move));
+
+		// カメラの角度から回転行列を計算する
+		Matrix4x4 rotateMatrixX = Matrix4x4Calc::MakeRotateXMatrix(viewProjection_->rotation_.x);
+		Matrix4x4 rotateMatrixY = Matrix4x4Calc::MakeRotateYMatrix(viewProjection_->rotation_.y);
+		Matrix4x4 rotateMatrixZ = Matrix4x4Calc::MakeRotateZMatrix(viewProjection_->rotation_.z);
+
+		Matrix4x4 rotateMatrix = Matrix4x4Calc::Multiply(
+		    rotateMatrixX, Matrix4x4Calc::Multiply(rotateMatrixY, rotateMatrixZ));
+
+		// 移動ベクトルをカメラの角度だけ回転する
+		move = Matrix4x4Calc::TransformNormal(move, rotateMatrix);
+
+		// 移動
+		worldTransform_.translation_ = Vector3Calc::Add(worldTransform_.translation_, move);
+
+		// 移動方向に見た目を合わせる(Y軸)
+		if (std::fabsf(move.x) > 0.1 || std::fabsf(move.z) > 0.1) {
+			worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
+		}
+
+	}
 
 }
 

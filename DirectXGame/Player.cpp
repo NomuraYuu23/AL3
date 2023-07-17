@@ -10,14 +10,6 @@
 #include "Vector3Calc.h"
 #include "Matrix4x4Calc.h"
 
-enum playerModelIndex {
-	kModelIndexBody,
-	kModelIndexHead,
-	kModelIndexL_arm,
-	kModelIndexR_arm,
-	kModelIndexWeapon
-};
-
 /// <summary>
 /// 初期化
 /// </summary>
@@ -62,9 +54,35 @@ void Player::Initialize(const std::vector<Model*>& models) {
 /// </summary>
 void Player::Update() {
 
-	// 通常行動更新
-	//BehaviorRootUpdate();
-	BehaviorAttackUpdate();
+	if (behaviorRequest_) {
+		//振るまいを変更する
+		behavior_ = behaviorRequest_.value();
+		//各振るまいごとの初期化を実行
+		switch (behavior_) {
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();
+			break;
+		case Behavior::kAttack:
+			BehaviorAttackInitialize();
+			break;
+		}
+		//振るまいリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+
+	// 振るまい
+	switch (behavior_) {
+	case Behavior::kRoot:
+	default:
+		BehaviorRootUpdate();
+		break;
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+	}
+
+
 
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
@@ -87,11 +105,27 @@ void Player::Draw(const ViewProjection& viewProjection) {
 	//for (Model* model : models_) {
 	//	model->Draw(worldTransform_, viewProjection);
 	//}
-	models_[kModelIndexBody]->Draw(worldTransformBody_, viewProjection);
-	models_[kModelIndexHead]->Draw(worldTransformHead_, viewProjection);
-	models_[kModelIndexL_arm]->Draw(worldTransformL_arm_, viewProjection);
-	models_[kModelIndexR_arm]->Draw(worldTransformR_arm_, viewProjection);
-	models_[kModelIndexWeapon]->Draw(worldTransformWeapon_, viewProjection);
+	models_[int(playerModelIndex::kModelIndexBody)]->Draw(worldTransformBody_, viewProjection);
+	models_[int(playerModelIndex::kModelIndexHead)]->Draw(worldTransformHead_, viewProjection);
+	models_[int(playerModelIndex::kModelIndexL_arm)]->Draw(worldTransformL_arm_, viewProjection);
+	models_[int(playerModelIndex::kModelIndexR_arm)]->Draw(worldTransformR_arm_, viewProjection);
+	models_[int(playerModelIndex::kModelIndexWeapon)]->Draw(worldTransformWeapon_, viewProjection);
+
+}
+
+/// <summary>
+/// 通常行動初期化
+/// </summary>
+void Player::BehaviorRootInitialize() {
+
+	// 浮遊ギミック
+	InitializeFloatinggimmick();
+
+	// ぶらぶらギミック
+	InitializeSwinggimmick();
+	
+	//武器角度
+	worldTransformWeapon_.rotation_.x = 0.0f;
 
 }
 
@@ -100,8 +134,9 @@ void Player::Draw(const ViewProjection& viewProjection) {
 /// </summary>
 void Player::BehaviorRootUpdate() {
 
-		XINPUT_STATE joyState;
+	XINPUT_STATE joyState;
 
+	//移動
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
 		const float speed = 0.3f;
@@ -131,11 +166,26 @@ void Player::BehaviorRootUpdate() {
 		}
 	}
 
+	//攻撃
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		behaviorRequest_ = Behavior::kAttack;
+	}
+
 	// 浮遊ギミック
 	UpdateFloatinggimmick();
 
 	// ぶらぶらギミック
 	UpdateSwinggimmick();
+
+}
+
+/// <summary>
+/// 攻撃行動初期化
+/// </summary>
+void Player::BehaviorAttackInitialize() {
+
+	// 攻撃行動用の媒介変数
+	behaviorAttackParameter_ = 0.0f;
 
 }
 
@@ -153,11 +203,9 @@ void Player::BehaviorAttackUpdate() {
 
 	// パラメータを1ステップ分加算
 	behaviorAttackParameter_ += step;
-	// 2πを超えたら0に戻す
-	behaviorAttackParameter_ = std::fmod(behaviorAttackParameter_, 2.0f * float(std::numbers::pi));
 	if (behaviorAttackParameter_ >= 0.8f * float(std::numbers::pi) &&
 	    behaviorAttackParameter_ <= 1.5f * float(std::numbers::pi)) {
-	
+
 		worldTransformL_arm_.rotation_.x = behaviorAttackParameter_;
 		worldTransformR_arm_.rotation_.x = behaviorAttackParameter_;
 		worldTransformWeapon_.rotation_.x = behaviorAttackParameter_ + float(std::numbers::pi);
@@ -171,9 +219,9 @@ void Player::BehaviorAttackUpdate() {
 		move = Vector3Calc::Multiply(speed, Vector3Calc::Normalize(move));
 
 		// カメラの角度から回転行列を計算する
-		Matrix4x4 rotateMatrixX = Matrix4x4Calc::MakeRotateXMatrix(viewProjection_->rotation_.x);
-		Matrix4x4 rotateMatrixY = Matrix4x4Calc::MakeRotateYMatrix(viewProjection_->rotation_.y);
-		Matrix4x4 rotateMatrixZ = Matrix4x4Calc::MakeRotateZMatrix(viewProjection_->rotation_.z);
+		Matrix4x4 rotateMatrixX = Matrix4x4Calc::MakeRotateXMatrix(worldTransform_.rotation_.x);
+		Matrix4x4 rotateMatrixY = Matrix4x4Calc::MakeRotateYMatrix(worldTransform_.rotation_.y);
+		Matrix4x4 rotateMatrixZ = Matrix4x4Calc::MakeRotateZMatrix(worldTransform_.rotation_.z);
 
 		Matrix4x4 rotateMatrix = Matrix4x4Calc::Multiply(
 		    rotateMatrixX, Matrix4x4Calc::Multiply(rotateMatrixY, rotateMatrixZ));
@@ -188,7 +236,14 @@ void Player::BehaviorAttackUpdate() {
 		if (std::fabsf(move.x) > 0.1 || std::fabsf(move.z) > 0.1) {
 			worldTransform_.rotation_.y = std::atan2f(move.x, move.z);
 		}
-
+	} else if (behaviorAttackParameter_ < 0.8f * float(std::numbers::pi)) {
+		//	振りかぶり
+		worldTransformL_arm_.rotation_.x = -behaviorAttackParameter_;
+		worldTransformR_arm_.rotation_.x = -behaviorAttackParameter_;
+	
+	} else if (behaviorAttackParameter_ >= 2.0f * float(std::numbers::pi)) {
+		// 2πを超えたら振るまい変更
+		behaviorRequest_ = Behavior::kRoot;
 	}
 
 }

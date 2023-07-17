@@ -3,8 +3,24 @@
 #include "WorldTransform.h"
 #include <memory>
 #include <vector>
+#include <optional>
 
 #include "BaseCharacter.h"
+
+// モデル
+enum class playerModelIndex {
+	kModelIndexBody = 0,
+	kModelIndexHead = 1,
+	kModelIndexL_arm = 2,
+	kModelIndexR_arm = 3,
+	kModelIndexWeapon = 4
+};
+
+// 振るまい
+enum class Behavior {
+	kRoot, // 通常状態
+	kAttack, //攻撃中
+};
 
 class Player : public BaseCharacter {
 
@@ -26,9 +42,19 @@ public:
 	void Draw(const ViewProjection& viewProjection) override;
 
 	/// <summary>
+	/// 通常行動初期化
+	/// </summary>
+	void BehaviorRootInitialize();
+
+	/// <summary>
 	/// 通常行動更新
 	/// </summary>
 	void BehaviorRootUpdate();
+
+	/// <summary>
+	/// 攻撃行動初期化
+	/// </summary>
+	void BehaviorAttackInitialize();
 
 	/// <summary>
 	/// 攻撃行動更新
@@ -73,7 +99,11 @@ private:
 	WorldTransform worldTransformR_arm_;
 	WorldTransform worldTransformWeapon_;
 
-	//モデル
+	//振るまい
+	Behavior behavior_ = Behavior::kRoot;
+	//次の振るまいリクエスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
 
 	//カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
@@ -93,6 +123,6 @@ private:
 	//攻撃行動用の媒介変数
 	float behaviorAttackParameter_ = 0.0f;
 	// 攻撃行動用のサイクル<frame>
-	uint16_t behaviorAttackPeriod_ = 1;
+	uint16_t behaviorAttackPeriod_ = 60;
 
 };

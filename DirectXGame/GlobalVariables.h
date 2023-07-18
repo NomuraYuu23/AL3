@@ -44,6 +44,11 @@ public:
 	/// <param name="value">値</param>
 	void SetValue(const std::string& groupName, const std::string& key, const Vector3& value);
 
+	/// <summary>
+	/// 毎フレーム処理
+	/// </summary>
+	void Update();
+
 private:
 	GlobalVariables() = default;
 	~GlobalVariables() = default;

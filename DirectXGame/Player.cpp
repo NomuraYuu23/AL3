@@ -10,6 +10,8 @@
 #include "Vector3Calc.h"
 #include "Matrix4x4Calc.h"
 
+#include "GlobalVariables.h"
+
 /// <summary>
 /// 初期化
 /// </summary>
@@ -46,6 +48,14 @@ void Player::Initialize(const std::vector<Model*>& models) {
 
 	//ぶらぶらギミック
 	InitializeSwinggimmick();
+
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	//グループを追加
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+	globalVariables->SetValue(groupName, "Test1", 90);
+	globalVariables->SetValue(groupName, "Test2", 90.0f);
+	globalVariables->SetValue(groupName, "Test3", Vector3(0.0f,0.0f,0.0f));
 	
 }
 

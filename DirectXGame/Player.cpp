@@ -92,8 +92,6 @@ void Player::Update() {
 		break;
 	}
 
-
-
 	//行列を定数バッファに転送
 	worldTransform_.UpdateMatrix();
 	worldTransformBody_.UpdateMatrix();
@@ -101,6 +99,11 @@ void Player::Update() {
 	worldTransformL_arm_.UpdateMatrix();
 	worldTransformR_arm_.UpdateMatrix();
 	worldTransformWeapon_.UpdateMatrix();
+
+	//GlobalVariables::SaveFile確認
+	//if (Input::GetInstance()->PushKey(DIK_S)) {
+	//	GlobalVariables::GetInstance()->GlobalVariables::SaveFile("Player");
+	//}
 
 }
 

@@ -53,10 +53,16 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	const char* groupName = "Player";
 	//グループを追加
 	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->AddItem(groupName, "Test1", 90);
-	globalVariables->AddItem(groupName, "Test2", 90.0f);
-	globalVariables->AddItem(groupName, "Test3", Vector3(0.0f, 0.0f, 0.0f));
-	
+	globalVariables->AddItem(groupName, "Head Translation", worldTransformHead_.translation_);
+	globalVariables->AddItem(groupName, "ArmL Translation", worldTransformL_arm_.translation_);
+	globalVariables->AddItem(groupName, "ArmR Translation", worldTransformR_arm_.translation_);
+	globalVariables->AddItem(groupName, "floatingPeriod", floatingPeriod_);
+	globalVariables->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
+	globalVariables->AddItem(groupName, "swingPeriod", swingPeriod_);
+	globalVariables->AddItem(groupName, "behaviorAttackPeriod", behaviorAttackPeriod_);
+
+	ApplyGlobalVariables();
+
 }
 
 /// <summary>
@@ -207,10 +213,6 @@ void Player::BehaviorAttackInitialize() {
 /// </summary>
 void Player::BehaviorAttackUpdate() {
 
-	ImGui::Begin("Player");
-	ImGui::SliderInt("behaviorAttackPeriod_", reinterpret_cast<int*>(&behaviorAttackPeriod_), 1, 120);
-	ImGui::End();
-
 	// 1フレームでのパラメータ加算値
 	const float step = 2.0f * float(std::numbers::pi) / behaviorAttackPeriod_;
 
@@ -286,6 +288,8 @@ void Player::UpdateFloatinggimmick() {
 	ImGui::SliderFloat3("ArmR Translation", &worldTransformR_arm_.translation_.x, -10.0f, 10.0f);
 	ImGui::SliderInt("floatingPeriod", reinterpret_cast<int*>(&floatingPeriod_), 1, 120);
 	ImGui::SliderFloat("floatingAmplitude", &floatingAmplitude_, 0.0f, 10.0f);
+	ImGui::SliderInt("swingPeriod", reinterpret_cast<int*>(&swingPeriod_), 1, 120);
+	ImGui::SliderInt("behaviorAttackPeriod_", reinterpret_cast<int*>(&behaviorAttackPeriod_), 1, 120);
 	ImGui::End();
 
 	// 1フレームでのパラメータ加算値
@@ -318,10 +322,6 @@ void Player::InitializeSwinggimmick() {
 /// </summary>
 void Player::UpdateSwinggimmick() {
 
-	ImGui::Begin("Player");
-	ImGui::SliderInt("swingPeriod", reinterpret_cast<int*>(&swingPeriod_), 1, 120);
-	ImGui::End();
-
 	// 1フレームでのパラメータ加算値
 	const float step = 2.0f * float(std::numbers::pi) / swingPeriod_;
 	// パラメータを1ステップ分加算
@@ -331,5 +331,28 @@ void Player::UpdateSwinggimmick() {
 
 	worldTransformL_arm_.rotation_.x = std::sinf(swingParameter_) / 2.0f;
 	worldTransformR_arm_.rotation_.x = std::sinf(swingParameter_) / 2.0f;
+
+}
+
+/// <summary>
+/// 調整項目の適用
+/// </summary>
+void Player::ApplyGlobalVariables() {
+
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+
+	worldTransformHead_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "Head Translation");
+	worldTransformL_arm_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "ArmL Translation");
+	worldTransformR_arm_.translation_ =
+	    globalVariables->GetVector3Value(groupName, "ArmR Translation");
+
+	floatingPeriod_ = globalVariables->GetIntValue(groupName, "floatingPeriod");
+	floatingAmplitude_ = globalVariables->GetFloatValue(groupName, "floatingAmplitude");
+
+	swingPeriod_ = globalVariables->GetIntValue(groupName, "swingPeriod");
+	behaviorAttackPeriod_ = globalVariables->GetIntValue(groupName, "behaviorAttackPeriod");
 
 }

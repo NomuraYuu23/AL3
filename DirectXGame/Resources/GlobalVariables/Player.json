@@ -1,11 +1,30 @@
 {
     "Player": {
+        "ArmL Translation": [
+            -1.0,
+            2.5,
+            0.0
+        ],
+        "ArmR Translation": [
+            1.0,
+            2.5,
+            0.0
+        ],
+        "Head Translation": [
+            0.0,
+            3.5,
+            0.0
+        ],
         "Test1": 51,
         "Test2": -3.125,
         "Test3": [
             0.0,
             0.0,
             0.0
-        ]
+        ],
+        "behaviorAttackPeriod": 1,
+        "floatingAmplitude": 0.0,
+        "floatingPeriod": 1,
+        "swingPeriod": 1
     }
 }

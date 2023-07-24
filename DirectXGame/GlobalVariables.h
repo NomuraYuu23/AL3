@@ -73,6 +73,12 @@ public:
 	// 項目の追加(Vector3)
 	void AddItem(const std::string& groupName, const std::string& key, const Vector3& value);
 
+	// 値の取得(int)
+	int32_t GetIntValue(const std::string& groupName, const std::string& key) ;
+	// 値の取得(float)
+	float GetFloatValue(const std::string& groupName, const std::string& key);
+	// 値の取得(Vector3)
+	Vector3 GetVector3Value(const std::string& groupName, const std::string& key);
 
 private:
 	GlobalVariables() = default;

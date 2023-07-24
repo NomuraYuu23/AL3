@@ -355,3 +355,41 @@ void GlobalVariables::AddItem(
 	}
 
 }
+
+// 値の取得(int)
+int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::string& key) {
+
+	assert(datas_.find(groupName) != datas_.end());
+	//グループの参照を取得
+	Group& group = datas_[groupName];
+
+	assert(group.items.find(key) != group.items.end());
+
+	return std::get<0>(group.items[key].value);
+}
+
+// 値の取得(float)
+float GlobalVariables::GetFloatValue(const std::string& groupName, const std::string& key) {
+
+	assert(datas_.find(groupName) != datas_.end());
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+
+	assert(group.items.find(key) != group.items.end());
+
+	return std::get<1>(group.items[key].value);
+
+}
+
+// 値の取得(Vector3)
+Vector3 GlobalVariables::GetVector3Value(const std::string& groupName, const std::string& key) {
+
+	assert(datas_.find(groupName) != datas_.end());
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+
+	assert(group.items.find(key) != group.items.end());
+
+	return std::get<2>(group.items[key].value);
+
+}

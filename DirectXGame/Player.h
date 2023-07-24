@@ -81,6 +81,11 @@ public:
 	/// </summary>
 	void UpdateSwinggimmick();
 
+	/// <summary>
+	/// 調整項目の適用
+	/// </summary>
+	void ApplyGlobalVariables();
+
 	WorldTransform GetWorldTransform() { return worldTransform_; }
 
 	WorldTransform* GetWorldTransformAddress() { return &worldTransform_; }
@@ -111,18 +116,18 @@ private:
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 	// 浮遊移動のサイクル<frame>
-	uint16_t floatingPeriod_ = 1;
+	int32_t floatingPeriod_ = 1;
 	// 浮遊の振幅<m>
 	float floatingAmplitude_ = 0.0f;
 
 	//ぶらぶらギミックの媒介変数
 	float swingParameter_ = 0.0f;
 	//ぶらぶらギミックのサイクル<frame>
-	uint16_t swingPeriod_ = 1;
+	int32_t swingPeriod_ = 1;
 
 	//攻撃行動用の媒介変数
 	float behaviorAttackParameter_ = 0.0f;
 	// 攻撃行動用のサイクル<frame>
-	uint16_t behaviorAttackPeriod_ = 60;
+	int32_t behaviorAttackPeriod_ = 60;
 
 };

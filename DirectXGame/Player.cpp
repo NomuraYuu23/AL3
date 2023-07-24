@@ -53,9 +53,9 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	const char* groupName = "Player";
 	//グループを追加
 	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->SetValue(groupName, "Test1", 90);
-	globalVariables->SetValue(groupName, "Test2", 90.0f);
-	globalVariables->SetValue(groupName, "Test3", Vector3(0.0f,0.0f,0.0f));
+	globalVariables->AddItem(groupName, "Test1", 90);
+	globalVariables->AddItem(groupName, "Test2", 90.0f);
+	globalVariables->AddItem(groupName, "Test3", Vector3(0.0f, 0.0f, 0.0f));
 	
 }
 

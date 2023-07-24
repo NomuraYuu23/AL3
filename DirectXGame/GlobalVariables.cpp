@@ -226,3 +226,132 @@ void GlobalVariables::Update() {
 	ImGui::End();
 
 }
+
+/// <summary>
+/// ディレクトリの全ファイル読み込み
+/// </summary>
+void GlobalVariables::LoadFiles() {
+
+	// 保存先ディレクトリのパスをローカル変数で宣言する
+	std::filesystem::path dir(kDirectoryPath);
+	// ディレクトリがなければスキップする
+	if (!std::filesystem::exists(dir)) {
+		return;
+	}
+
+	//各ファイルの処理
+	std::filesystem::directory_iterator dir_it(kDirectoryPath);
+	for (const std::filesystem::directory_entry& entry : dir_it) {
+	
+		// ファイルパスを取得
+		const std::filesystem::path& filePath = entry.path();
+
+		// ファイル拡張子を取得
+		std::string extension = filePath.extension().string();
+		// .jsonファイル以外はスキップ
+		if (extension.compare(".json") != 0) {
+			continue;
+		}
+
+		// ファイル読み込み
+		LoadFile(filePath.stem().string());
+
+	}
+
+
+}
+
+/// <summary>
+/// ファイルから読み込む
+/// </summary>
+/// <param name="groupName">グループ</param>
+void GlobalVariables::LoadFile(const std::string& groupName) {
+
+	// 読み込むJSONファイルのフルパスを合成する
+	std::string filePath = kDirectoryPath + groupName + ".json";
+	// 読み込み用ファイルストリーム
+	std::ifstream ifs;
+	// ファイルを読み込み用に聞く
+	ifs.open(filePath);
+
+	// ファイルオープン失敗?
+	if (ifs.fail()) {
+		std::string message = "Failed open data file for write.";
+		MessageBoxA(nullptr, message.c_str(), "GlobalVariables", 0);
+		assert(0);
+		return;
+	}
+
+	nlohmann::json root;
+
+	// json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	// ファイルを閉じる
+	ifs.close();
+
+	// グループを検索
+	nlohmann::json::iterator itGroup = root.find(groupName);
+
+	// 未登録チェック
+	assert(itGroup != root.end());
+
+	// 各アイテムについて
+	for (nlohmann::json::iterator itItem = itGroup->begin(); itItem != itGroup->end(); ++itItem) {
+	
+		// アイテム名を取得
+		const std::string& itemName = itItem.key();
+
+		// int32_t型の値を保持していれば
+		if (itItem->is_number_integer()) {
+			// int型の値を登録
+			int32_t value = itItem->get<int32_t>();
+			SetValue(groupName, itemName, value);
+		}
+
+		// float型の値を保持していれば
+		else if (itItem->is_number_float()) {
+			// int型の値を登録
+			double value = itItem->get<double>();
+			SetValue(groupName, itemName, static_cast<float>(value));
+		}
+		// 要素数3の配列であれば
+		else if (itItem->is_array() && itItem->size() == 3) {
+			// float型のjson配列登録
+			Vector3 value = {itItem->at(0), itItem->at(1), itItem->at(2)};
+			SetValue(groupName, itemName, value);
+		}
+
+	}
+
+
+}
+
+
+// 項目の追加(int)
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, int32_t value) {
+
+	// 項目が未登録なら
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		SetValue(groupName, key, value);
+	}
+
+}
+
+// 項目の追加(float)
+void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, float value) {
+	
+	// 項目が未登録なら
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		SetValue(groupName, key, value);
+	}
+}
+// 項目の追加(Vector3)
+void GlobalVariables::AddItem(
+	const std::string& groupName, const std::string& key, const Vector3& value) {
+
+	// 項目が未登録なら
+	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+		SetValue(groupName, key, value);
+	}
+
+}

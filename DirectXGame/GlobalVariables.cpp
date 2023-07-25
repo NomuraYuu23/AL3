@@ -44,8 +44,8 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 	root[groupName] = nlohmann::json::object();
 
 	//各項目について
-	for (std::map<std::string, Item>::iterator itItem = itGroup->second.items.begin();
-	     itItem != itGroup->second.items.end(); ++itItem) {
+	for (std::map<std::string, Item>::iterator itItem = itGroup->second.begin();
+	     itItem != itGroup->second.end(); ++itItem) {
 	
 		//項目名を取得
 		const std::string& itemName = itItem->first;
@@ -53,21 +53,21 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 		Item& item = itItem->second;
 
 		// int32_t型の値を保持していれば
-		if (std::holds_alternative<int32_t>(item.value)) {
+		if (std::holds_alternative<int32_t>(item)) {
 			// int32_t型の値を登録
-			root[groupName][itemName] = std::get<int32_t>(item.value);
+			root[groupName][itemName] = std::get<int32_t>(item);
 		}
 
 		// float型の値を保持していれば
-		else if (std::holds_alternative<float>(item.value)) {
+		else if (std::holds_alternative<float>(item)) {
 			// float型の値を登録
-			root[groupName][itemName] = std::get<float>(item.value);
+			root[groupName][itemName] = std::get<float>(item);
 		}
 
 		// Vector3型の値を保持していれば
-		else if (std::holds_alternative<Vector3>(item.value)) {
+		else if (std::holds_alternative<Vector3>(item)) {
 			// float型の値を登録
-			Vector3 value = std::get<Vector3>(item.value);
+			Vector3 value = std::get<Vector3>(item);
 			root[groupName][itemName] = nlohmann::json::array({value.x, value.y, value.z});
 		}
 
@@ -113,9 +113,9 @@ void GlobalVariables::SetValue(
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
 	Item newItem{};
-	newItem.value = value;
+	newItem = value;
 	// 設定した項目をstd::mapに追加
-	group.items[key] = newItem;
+	group[key] = newItem;
 
 }
 
@@ -131,9 +131,9 @@ void GlobalVariables::SetValue(const std::string& groupName, const std::string& 
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
 	Item newItem{};
-	newItem.value = value;
+	newItem = value;
 	// 設定した項目をstd::mapに追加
-	group.items[key] = newItem;
+	group[key] = newItem;
 
 }
 
@@ -150,9 +150,9 @@ void GlobalVariables::SetValue(
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
 	Item newItem{};
-	newItem.value = value;
+	newItem = value;
 	// 設定した項目をstd::mapに追加
-	group.items[key] = newItem;
+	group[key] = newItem;
 
 }
 
@@ -180,8 +180,8 @@ void GlobalVariables::Update() {
 			continue;
 		
 		//各項目について
-		for (std::map<std::string, Item>::iterator itItem = group.items.begin();
-		     itItem != group.items.end(); ++itItem) {
+		for (std::map<std::string, Item>::iterator itItem = group.begin();
+		     itItem != group.end(); ++itItem) {
 			
 			//項目名を取得
 			const std::string& itemName = itItem->first;
@@ -189,20 +189,20 @@ void GlobalVariables::Update() {
 			Item& item = itItem->second;
 
 			// int32_t型の値を保持していれば
-			if (std::holds_alternative<int32_t>(item.value)) {
-				int32_t* ptr = std::get_if<int32_t>(&item.value);
+			if (std::holds_alternative<int32_t>(item)) {
+				int32_t* ptr = std::get_if<int32_t>(&item);
 				ImGui::SliderInt(itemName.c_str(), ptr, 0, 100);
 			}
 
 			// float型の値を保持していれば
-			if (std::holds_alternative<float>(item.value)) {
-				float* ptr = std::get_if<float>(&item.value);
+			if (std::holds_alternative<float>(item)) {
+				float* ptr = std::get_if<float>(&item);
 				ImGui::SliderFloat(itemName.c_str(), ptr, -100.0f, 100.0f);
 			}
 
 			// Vector3型の値を保持していれば
-			if (std::holds_alternative<Vector3>(item.value)) {
-				Vector3* ptr = std::get_if<Vector3>(&item.value);
+			if (std::holds_alternative<Vector3>(item)) {
+				Vector3* ptr = std::get_if<Vector3>(&item);
 				ImGui::SliderFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), -10.0f, 10.0f);
 			}
 
@@ -331,7 +331,7 @@ void GlobalVariables::LoadFile(const std::string& groupName) {
 void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, int32_t value) {
 
 	// 項目が未登録なら
-	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+	if (datas_[groupName].find(key) == datas_[groupName].end()) {
 		SetValue(groupName, key, value);
 	}
 
@@ -341,7 +341,7 @@ void GlobalVariables::AddItem(const std::string& groupName, const std::string& k
 void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, float value) {
 	
 	// 項目が未登録なら
-	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+	if (datas_[groupName].find(key) == datas_[groupName].end()) {
 		SetValue(groupName, key, value);
 	}
 }
@@ -350,7 +350,7 @@ void GlobalVariables::AddItem(
 	const std::string& groupName, const std::string& key, const Vector3& value) {
 
 	// 項目が未登録なら
-	if (datas_[groupName].items.find(key) == datas_[groupName].items.end()) {
+	if (datas_[groupName].find(key) == datas_[groupName].end()) {
 		SetValue(groupName, key, value);
 	}
 
@@ -363,9 +363,9 @@ int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::st
 	//グループの参照を取得
 	Group& group = datas_[groupName];
 
-	assert(group.items.find(key) != group.items.end());
+	assert(group.find(key) != group.end());
 
-	return std::get<0>(group.items[key].value);
+	return std::get<0>(group[key]);
 }
 
 // 値の取得(float)
@@ -375,9 +375,9 @@ float GlobalVariables::GetFloatValue(const std::string& groupName, const std::st
 	// グループの参照を取得
 	Group& group = datas_[groupName];
 
-	assert(group.items.find(key) != group.items.end());
+	assert(group.find(key) != group.end());
 
-	return std::get<1>(group.items[key].value);
+	return std::get<1>(group[key]);
 
 }
 
@@ -388,8 +388,8 @@ Vector3 GlobalVariables::GetVector3Value(const std::string& groupName, const std
 	// グループの参照を取得
 	Group& group = datas_[groupName];
 
-	assert(group.items.find(key) != group.items.end());
+	assert(group.find(key) != group.end());
 
-	return std::get<2>(group.items[key].value);
+	return std::get<2>(group[key]);
 
 }

@@ -8,6 +8,7 @@
 class GlobalVariables {
 
 public:
+
 	/// <summary>
 	/// インスタンスの取得
 	/// </summary>
@@ -87,15 +88,18 @@ private:
 	const GlobalVariables& operator=(const GlobalVariables&) = delete;
 
 	//項目
-	struct Item {
+	//struct Item {
 		// 項目の値
-		std::variant<int32_t, float, Vector3> value;
-	};
+	//	std::variant<int32_t, float, Vector3> value;
+	//};
 
 	//グループ
-	struct Group {
-		std::map<std::string, Item> items;
-	};
+	//struct Group {
+	//	std::map<std::string, Item> items;
+	//};
+
+	using Item = std::variant<int32_t, float, Vector3>;
+	using Group = std::map<std::string,Item>;
 
 	// 全データ
 	std::map<std::string, Group> datas_;

@@ -56,10 +56,10 @@ void Player::Initialize(const std::vector<Model*>& models) {
 	globalVariables->AddItem(groupName, "Head Translation", worldTransformHead_.translation_);
 	globalVariables->AddItem(groupName, "ArmL Translation", worldTransformL_arm_.translation_);
 	globalVariables->AddItem(groupName, "ArmR Translation", worldTransformR_arm_.translation_);
+	globalVariables->AddItem(groupName, "behaviorAttackPeriod", behaviorAttackPeriod_);
 	globalVariables->AddItem(groupName, "floatingPeriod", floatingPeriod_);
 	globalVariables->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
 	globalVariables->AddItem(groupName, "swingPeriod", swingPeriod_);
-	globalVariables->AddItem(groupName, "behaviorAttackPeriod", behaviorAttackPeriod_);
 
 	ApplyGlobalVariables();
 

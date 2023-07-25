@@ -23,8 +23,8 @@
             0.0
         ],
         "behaviorAttackPeriod": 1,
-        "floatingAmplitude": 0.0,
-        "floatingPeriod": 1,
-        "swingPeriod": 1
+        "floatingAmplitude": 3.125,
+        "floatingPeriod": 48,
+        "swingPeriod": 52
     }
 }
